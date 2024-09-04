@@ -189,8 +189,8 @@ public class UsersController {
 
         if (dbUser != null) { // ユーザがいるかどうかを判定
             String profileImage;
-            // そのユーザが画像データを保持しているかを判定
-            if (dbUser.getProfileImageData() == null || dbUser.getProfileImageData().length == 0) {
+            // ユーザが画像データを保持しているかを判定
+            if (dbUser.getProfileImageData() == null) {
                 profileImage = encodeImage(DEFAULT_IMAGE_PATH); // 画像データを保持していないと、no-image.jpegを指定
             } else {
                 // 画像をエンコードしてhtmlで表示できるようにしている
@@ -238,11 +238,19 @@ public class UsersController {
                             BindingResult result,
                             ModelAndView mav) throws IOException {
 
+        // 現在のユーザー情報を取得するものを作成する。そして既存の画像を表示できるようにする
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();  // メールアドレス取得
+        Users dbUser = usersMapper.findByMailAddress(email); // メールアドレスで検索
+
         try {
             // ファイルが空でない場合
             if (!file.isEmpty()) {
                 // ファイルのバイナリデータをユーザーオブジェクトに設定
                 user.setProfileImageData(file.getBytes());
+            }else {
+                // 何も添付されなかった場合は、ユーザが保持している既存の画像を表示
+                user.setProfileImageData(dbUser.getProfileImageData());
             }
         } catch (IOException e) {
             logger.error("画像の読み込みに失敗しました", e);
