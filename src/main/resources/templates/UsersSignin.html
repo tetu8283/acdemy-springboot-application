@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sign In Page</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="signin-header">
+        <h1 class="header-h1">My Portfolio</h1>
+            <form name="login" class="header-form" th:action="@{/users/login}" method="get">
+                <button class="header-btn" type="submit">ログイン</button>
+            </form>
+    </header>
+    <main>
+        <p class="main-p">新規登録</p>
+        <div class="user-form">
+            <form th:action="@{/users/signin}" th:object="${user}" method="post">
+                <input type="hidden" th:field="*{userId}" />
+
+                <div class="input-name">
+                    <p>氏名</p>
+                    <input type="text" class="input-form" th:field="*{userName}" />
+                    <!--"${#fields.hasErrors('userName')}" でエラーがあるかを確認  -->
+                    <!-- th:errors="*{userName}"でuserNameに対応するエラーを表示 -->
+                    <div th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}" class="validation-error"></div>
+                </div>
+
+                <div class="input-address">
+                    <p>メールアドレス</p>
+                    <input type="text" class="input-form" th:field="*{mailAddress}" />
+                    <div th:if="${#fields.hasErrors('mailAddress')}" th:errors="*{mailAddress}" class="validation-error"></div>
+                </div>
+
+                <div class="input-password">
+                    <p>パスワード</p>
+                    <input type="password" class="input-form" th:field="*{password}" />
+                    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="validation-error"></div>
+                </div>
+
+                <p class="submit-btn"><button type="submit">登録する</button></p>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p class="footer-p">portfolio site</p>
+    </footer>
+</body>
+</html>

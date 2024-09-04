@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Top page</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="signin-header">
+        <h1 class="header-h1">My Portfolio</h1>
+        <!-- ログアウトボタン -->
+        <form name="logout" class="header-form" th:action="@{/users/logout}" method="post">
+            <button class="header-btn" type="submit">ログアウト</button>
+        </form>
+    </header>
+    <main>
+        <div class="profile">
+            <div class="profile-info">
+                <div class="profile-img">
+                    <!-- プロフィール画像がある場合はBase64で表示し、ない場合はデフォルト画像を表示 -->
+                    <img th:src="${profileImage}" alt="Profile Image" />
+                </div>
+                <div class="user-name">
+                    <p th:text="${user_name != null ? user_name : 'Guest'}"></p>
+                </div>
+            </div>
+            <div class="self-introduction">
+                <h2>自己紹介</h2>
+                <p th:text="${self_introduction}"></p>
+                
+                <form name="edit" class="edit-form" th:action="@{/users/edit/{id}(id=${user != null ? user.userId : 0})}" method="post">
+                    <button class="edit-btn" type="submit">自己紹介を編集する</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p class="footer-p" th:text="${user_name != null ? user_name : 'Guest'}"></p>
+    </footer>
+</body>
+</html>

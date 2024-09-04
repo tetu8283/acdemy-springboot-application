@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.springbootapplication.mapper.UsersMapper">
+    
+    <!-- すべてのユーザーを取得 -->
+    <select id="findAll" resultType="com.spring.springbootapplication.entity.Users">
+        SELECT userId, userName, mailAddress, password, selfIntroduction, profileImageData FROM Users
+    </select>
+    
+    <!-- ユーザーを検索して、メアドとパスが一致したものを取得 (ログイン処理) -->
+    <select id="findByMailAddressAndPassword" parameterType="map" resultType="com.spring.springbootapplication.entity.Users">
+        SELECT * FROM Users WHERE mailAddress = #{mailAddress} AND password = #{password}
+    </select>
+
+    <!-- メールアドレスでユーザーを検索 -->
+    <select id="findByMailAddress" parameterType="string" resultType="com.spring.springbootapplication.entity.Users">
+        SELECT * FROM Users WHERE mailAddress = #{mailAddress}
+    </select>
+
+    <!-- idでユーザ検索(editで使用) -->
+    <select id="findById" parameterType="long" resultType="com.spring.springbootapplication.entity.Users">
+        SELECT * FROM Users WHERE userId = #{userId}
+    </select>
+    
+    <!-- 新しいユーザーを挿入 -->
+    <insert id="insert" parameterType="com.spring.springbootapplication.entity.Users">
+        INSERT INTO Users(userName, mailAddress, password, selfIntroduction, profileImageData) 
+        VALUES(#{userName}, #{mailAddress}, #{password}, #{selfIntroduction}, #{profileImageData})
+    </insert>
+    
+    <!-- ユーザー情報を更新 -->
+    <update id="update" parameterType="com.spring.springbootapplication.entity.Users">
+        UPDATE Users 
+        SET selfIntroduction=#{selfIntroduction}, profileImageData=#{profileImageData}
+        WHERE userId = #{userId}
+    </update>
+    
+    <!-- ユーザーを削除 -->
+    <delete id="delete" parameterType="long">
+        DELETE FROM Users WHERE userId = #{userId}
+    </delete>
+</mapper>

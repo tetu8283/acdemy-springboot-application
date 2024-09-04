@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ユーザー一覧</title>
+</head>
+<body>
+    <h1>ユーザー一覧</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ユーザー名</th>
+                <th>メールアドレス</th>
+                <th>自己紹介</th>
+                <th>プロフィール画像</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- ユーザーリストをループして表示 -->
+            <tr th:each="user : ${userList}">
+                <td th:text="${user.userId}">1</td>
+                <td th:text="${user.userName}">名前</td>
+                <td th:text="${user.mailAddress}">example@mail.com</td>
+                <td th:text="${user.selfIntroduction}">自己紹介文</td>
+                <td th:text="${user.profileImageData}">プロフィール画像</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <a href="/users/top">トップページに戻る</a>
+</body>
+</html>
