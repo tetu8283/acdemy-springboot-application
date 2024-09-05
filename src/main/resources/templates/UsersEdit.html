@@ -17,8 +17,8 @@
         <div>
             <label for="self-introduction">自己紹介文</label>
             <textarea id="self-introduction" th:field="*{selfIntroduction}"></textarea>
-            <div th:if="${#fields.hasErrors('selfIntroduction')}" 
-                th:errors="*{selfIntroduction}" class="error-message"></div>
+            <!-- バリデーションメッセージ表示 -->
+            <div th:if="${#fields.hasErrors('selfIntroduction')}" th:errors="*{selfIntroduction}" class="validation-error"></div>
         </div>
 
         <!-- プロフィール画像のアップロード -->

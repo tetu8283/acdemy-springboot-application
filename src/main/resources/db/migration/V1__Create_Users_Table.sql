@@ -7,5 +7,3 @@ CREATE TABLE Users (
     selfIntroduction VARCHAR(200) CHECK (CHAR_LENGTH(selfIntroduction) >= 50 AND CHAR_LENGTH(selfIntroduction) <= 200),
     profileImageData BYTEA  -- 画像データをBase64エンコードした文字列として格納
 );
-
-

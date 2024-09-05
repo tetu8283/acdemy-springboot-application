@@ -187,22 +187,19 @@ public class UsersController {
         String email = authentication.getName();  // メールアドレス取得
         Users dbUser = usersMapper.findByMailAddress(email); // メールアドレスで検索
 
-        if (dbUser != null) { // ユーザがいるかどうかを判定
-            String profileImage;
-            // ユーザが画像データを保持しているかを判定
-            if (dbUser.getProfileImageData() == null) {
-                profileImage = encodeImage(DEFAULT_IMAGE_PATH); // 画像データを保持していないと、no-image.jpegを指定
-            } else {
-                // 画像をエンコードしてhtmlで表示できるようにしている
-                profileImage = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(dbUser.getProfileImageData());
-            }
-            mav.addObject("profileImage", profileImage);
-            mav.addObject("user_name", dbUser.getUserName());
-            mav.addObject("self_introduction", dbUser.getSelfIntroduction());
+        String profileImage;
+        // ユーザが画像データを保持しているかを判定
+        if (dbUser.getProfileImageData() == null) {
+            profileImage = encodeImage(DEFAULT_IMAGE_PATH); // 画像データを保持していないと、no-image.jpegを指定
         } else {
-            mav.addObject("user_name", "Guest");
-            mav.addObject("profileImage", encodeImage(DEFAULT_IMAGE_PATH));
+            // 画像をエンコードしてhtmlで表示できるようにしている
+            profileImage = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(dbUser.getProfileImageData());
         }
+        mav.addObject("user", dbUser);
+        mav.addObject("profileImage", profileImage);
+        mav.addObject("user_name", dbUser.getUserName());
+        mav.addObject("self_introduction", dbUser.getSelfIntroduction());
+
         return mav;
     }
 
@@ -242,6 +239,7 @@ public class UsersController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();  // メールアドレス取得
         Users dbUser = usersMapper.findByMailAddress(email); // メールアドレスで検索
+
 
         try {
             // ファイルが空でない場合
