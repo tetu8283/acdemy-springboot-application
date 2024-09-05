@@ -33,6 +33,8 @@
         </div>
     </form>
 
+    <div th:if="${errors != null}" th:text="${errors}" class="error-message"></div>
+
     <a href="/users/top">トップページに戻る</a>
 </body>
 </html>

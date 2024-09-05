@@ -34,13 +34,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 /**
- * ユーザー関連のアクションをハンドリングする
- * ログイン、サインイン、ユーザー一覧の表示機能を提供
+ * ユーザー関連の処理をハンドリングする
+ * ログイン、サインイン、ユーザー一覧の表示機能
  */
 @Controller
 public class UsersController {
 
-    // ログを出力するためのロガー (開発中に動作確認のために使用。開発が終了したらコメントアウト)
+    // ログを出力するためのロガー (開発中に動作確認のために使用。開発が終了したら削除)
     private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 
     // パスワードのエンコードを行うエンコーダー 
@@ -112,7 +112,7 @@ public class UsersController {
     @GetMapping("/users/signin")
     public ModelAndView signin(ModelAndView mav) {
         mav.setViewName("UsersSignin");
-        mav.addObject("user", new Users());  // フォーム用の空のユーザーオブジェクトを提供
+        mav.addObject("user", new Users());  // フォーム用の空のユーザーオブジェクトを渡す
         return mav;
     }
 
@@ -235,6 +235,14 @@ public class UsersController {
                             BindingResult result,
                             ModelAndView mav) throws IOException {
 
+        // バリデーションエラーがある場合、編集ページを再表示
+        if (result.hasErrors()) {
+            mav.setViewName("UsersEdit");
+            mav.addObject("user", user);
+            mav.addObject("errorMessage", result.getAllErrors()); // エラーメッセージをモデルに追加
+            return mav;
+        }
+
         // 現在のユーザー情報を取得するものを作成する。そして既存の画像を表示できるようにする
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();  // メールアドレス取得
@@ -253,6 +261,8 @@ public class UsersController {
         } catch (IOException e) {
             logger.error("画像の読み込みに失敗しました", e);
             mav.addObject("errorMessage", "画像のアップロードに失敗しました");
+            mav.addObject("user", user);
+            mav.setViewName("UserEdit");
             return mav;
         }
         
@@ -261,7 +271,7 @@ public class UsersController {
         return new ModelAndView("redirect:/users/top");
     }
 
-    // 画像をBase64エンコードして文字列として返すメソッド
+    // 画像をエンコードして文字列として返すメソッド
     private String encodeImage(String path) {
         try {
             byte[] imageBytes = Files.readAllBytes(Paths.get(path));
@@ -272,6 +282,9 @@ public class UsersController {
         }
     }
 
+
+    // これはDBの中身を確認するために作成。
+    // SecurituConfigでログインしなくてもDBの中身が確認できるようにアクセス許可を与えている
 
     /**
      * ユーザー一覧を表示する
