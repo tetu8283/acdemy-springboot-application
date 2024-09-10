@@ -17,7 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +53,15 @@ public class UsersController {
     // データベースにアクセスするためのユーザーマッパー
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private Validator validator; // SpringのValidatorをインジェクション
+
+    // バリデーションの設定
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+    }
 
     // デフォルト画像パス
     private static final String DEFAULT_IMAGE_PATH = "src/main/resources/static/imgs/no-img.jpeg"; 
@@ -102,6 +114,7 @@ public class UsersController {
         // ログイン成功時にトップページにリダイレクト
         return new ModelAndView("redirect:/users/top");
     }
+
 
     /**
      * サインインページを表示
@@ -214,59 +227,66 @@ public class UsersController {
         Users user = usersMapper.findById(id);
         mav.setViewName("UsersEdit");
         mav.addObject("user", user);
+        mav.addObject("user_name", user.getUserName());
         return mav;
     }
 
     /**
      * 
-     * @param id  URLパスから取得したユーザーID
-     * @param file  フォームから送信されたファイル
-     * @param user  フォームから送信されたバリデーション付きのユーザー情報
-     * @param result  バリデーションの結果
-     * @param mav  
+     * @param id
+     * @param file
+     * @param user
+     * @param result
+     * @param mav
      * @return
      * @throws IOException
      */
+
     @PostMapping("/users/update/{id}")
     @Transactional
     public ModelAndView update(@PathVariable Long id,
-                            @RequestParam("file") MultipartFile file,
-                            @Valid @ModelAttribute Users user,
-                            BindingResult result,
-                            ModelAndView mav) throws IOException {
+                                @RequestParam("file") MultipartFile file,
+                                @ModelAttribute Users user, // @Validを外して手動でバリデーションする
+                                BindingResult result,
+                                ModelAndView mav) throws IOException {
 
-        // バリデーションエラーがある場合、編集ページを再表示
-        if (result.hasErrors()) {
+        // データベースから現在のユーザー情報を取得
+        Users dbUser = usersMapper.findById(id);
+
+        // フォームから送信されるuserにnullのフィールドがある場合、dbUserから値をuserに追加する
+        if (user.getUserName() == null) user.setUserName(dbUser.getUserName());
+        if (user.getMailAddress() == null) user.setMailAddress(dbUser.getMailAddress()); 
+        if (user.getPassword() == null) user.setPassword(dbUser.getPassword());
+
+        // 自己紹介文の手動バリデーション（50文字以上200文字以下かをチェック）
+        String selfIntroduction = user.getSelfIntroduction();  // 入力された自己紹介文を保持
+        if (selfIntroduction.length() < 50 || selfIntroduction.length() > 200) {
             mav.setViewName("UsersEdit");
             mav.addObject("user", user);
-            mav.addObject("errorMessage", result.getAllErrors()); // エラーメッセージをモデルに追加
+            mav.addObject("user_name", user.getUserName());
+            mav.addObject("errorMessage", "自己紹介文は50文字以上200文字以下で入力してください。");
             return mav;
         }
 
-        // 現在のユーザー情報を取得するものを作成する。そして既存の画像を表示できるようにする
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();  // メールアドレス取得
-        Users dbUser = usersMapper.findByMailAddress(email); // メールアドレスで検索
-
-
         try {
-            // ファイルが空でない場合
+            // ファイルが空でない場合、新しい画像データを設定
             if (!file.isEmpty()) {
-                // ファイルのバイナリデータをユーザーオブジェクトに設定
                 user.setProfileImageData(file.getBytes());
-            }else {
-                // 何も添付されなかった場合は、ユーザが保持している既存の画像を表示
+            } else {
+                // 画像ファイルが空の場合、既存の画像データを保持
                 user.setProfileImageData(dbUser.getProfileImageData());
             }
         } catch (IOException e) {
+            // 画像の読み込みに失敗した場合のエラーハンドリング
             logger.error("画像の読み込みに失敗しました", e);
             mav.addObject("errorMessage", "画像のアップロードに失敗しました");
             mav.addObject("user", user);
-            mav.setViewName("UserEdit");
+            mav.addObject("user_name", user.getUserName());
+            mav.setViewName("UsersEdit");
             return mav;
         }
-        
-        user.setUserId(id);
+
+        // データベースのユーザー情報を更新
         usersMapper.update(user);
         return new ModelAndView("redirect:/users/top");
     }

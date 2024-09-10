@@ -21,7 +21,7 @@ header {
     flex-shrink: 0; /* ヘッダーのサイズを固定 */
 }
 
-.signin-header {
+.signin-header, .top-header, .edit-header {
     height: 120px;
     padding: 0 40px;
     display: flex; /* 横並びにする */
@@ -55,6 +55,7 @@ main {
     /* この要素が空いたスペースを埋めるようにしてい */
     flex-grow: 1; 
     margin: 0 auto;
+    width: 50%;
 }
 
 .main-p {
@@ -200,8 +201,8 @@ footer {
 }
 
 .profile-img img {
-    width: 24vh;
-    height: 24vh;
+    width: 30vh;
+    height: 30vh;
     border-radius: 50%;
     object-fit: cover; /* 画像が枠内にフィットするようにする */
 }
@@ -243,4 +244,120 @@ footer {
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
+}
+
+
+/* ここからeditページのcss  */
+
+.main-edit-p {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 36px;
+}
+
+/* 編集フォーム全体のスタイル */
+.input-form {
+    max-width: 480px; /* フォームの最大幅を設定 */
+    margin: 0 auto; /* フォームを中央に配置 */
+}
+
+/* セクションのスタイル */
+.self-introduction-section,
+.img-section {
+    margin-bottom: 30px; 
+}
+
+.edit-p {
+    color: #999999; 
+    font-size: 12px;
+    font-weight: 400;
+}
+
+/* テキストエリアのスタイル */
+.self-introduction {
+    width: 100%; /* テキストエリアをフォームの幅いっぱいに */
+    padding: 0 10px 10px 10px; /* 内側の余白を追加 */
+    font-size: 16px; /* フォントサイズ */
+    border: none; /* 枠線を削除 */
+    resize: vertical; /* 縦方向のリサイズのみ許可 */
+    outline: none;
+    margin-bottom: 10px; /* テキストエリアの下に余白を追加 */
+}
+
+/* ファイル入力フィールドのスタイル */
+input[type="file"] {
+    margin-top: 5px; /* 上に少し余白を追加 */
+    font-size: 14px; /* フォントサイズを調整 */
+    padding: 5px; /* 内側の余白を追加 */
+}
+
+/* 送信ボタンのスタイル */
+.submit-edit-btn {
+    width: 100%; /* ボタンの幅を100%に設定 */
+    max-width: 260px; /* ボタンの最大幅を設定 */
+    padding: 10px; /* 内側の余白を追加 */
+    font-size: 16px; /* フォントサイズを設定 */
+    background-color: #1B5678; /* 背景色を設定 */
+    color: white; /* テキストの色 */
+    border: none; /* 枠線を削除 */
+    border-radius: 5px; /* 角を丸くする */
+    cursor: pointer; /* カーソルをポインターにする */
+    margin: 55px auto 0; /* 上に余白を追加し、中央揃え */
+    display: block; /* ブロック要素として表示 */
+    text-align: center; /* テキストを中央揃え */
+}
+
+/* フォームのエラーメッセージのスタイル */
+.error-message {
+    color: red; 
+    font-size: 12px;
+    margin-top: 5px; 
+    text-align: center; /* エラーメッセージを中央に配置 */
+}
+
+/* デフォルトのファイル入力ボタンを非表示にする */
+input[type="file"] {
+    display: none; 
+}
+
+.input-edit-form {
+    width: 60%; 
+    font-size: 16px;
+    border: none; /* デフォルトの枠線を削除 */
+    /* フォームにフォーカスした際のアウトライン表示をキャンセル */
+    outline: none;
+    margin: 0 auto;
+}
+
+.edit-self-introduction {
+    width: 100%; /* テキストエリアをフォームの幅いっぱいに */
+    padding: 0 10px 10px 10px; /* 内側の余白を追加 */
+    font-size: 16px; /* フォントサイズ */
+    border: none; /* 枠線を削除 */
+    resize: vertical; /* 縦方向のリサイズのみ許可 */
+    outline: none;
+    margin-bottom: 10px; /* テキストエリアの下に余白を追加 */
+    border-bottom: 1px solid #ccc; 
+}
+
+/* カスタムファイル入力ボタンのスタイル */
+.custom-file-upload {
+    display: inline-block;
+    padding: 5px 20px; /* 内側の余白を設定 */
+    font-size: 16px; /* フォントサイズを設定 */
+    cursor: pointer; /* ポインターを表示 */
+    background-color: #dcdcdc;
+    /* border: 1px solid #ccc; ボーダーを追加 */
+    border-radius: 5px;
+    color: #333; 
+    text-align: center;
+}
+
+.custom-file-upload:hover {
+    background-color: #e0e0e0; 
+}
+
+.edit-error-message {
+    color: #999999;
+    font-size: 12px;
 }
