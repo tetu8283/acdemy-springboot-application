@@ -186,61 +186,6 @@ public class UsersController {
      * @return 
      */
 
-    // @GetMapping("/users/top")
-    // public ModelAndView top(HttpServletRequest request) throws IOException{
-    //     ModelAndView mav = new ModelAndView("UsersTop");
-    //     // ユーザの認証情報を保持
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     String email = authentication.getName();  // メールアドレス取得
-    //     Users dbUser = usersMapper.findByMailAddress(email); // メールアドレスで検索
-
-    //     String profileImageData;
-    //     // ユーザが画像データを保持しているかを判定
-    //     if (dbUser.getProfileImageData() == null) {
-    //         // profileImageData = encodeImage(DEFAULT_IMAGE_PATH); // 画像データを保持していないと、no-image.jpegを渡す
-
-    //         /*
-    //          * readAllBytes(Path 〇〇) 指定されたパスのファイルを読んでバイト配列にして返す
-    //          */
-    //         dbUser.setProfileImageData(Files.readAllBytes(Paths.get(DEFAULT_IMAGE_PATH))); // デフォルト画像をユーザーオブジェクトに追加
-    //     } else {
-    //         // 画像をエンコードしてhtmlで表示できるようにしている
-    //         profileImageData = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(dbUser.getProfileImageData());
-    //         // dbUser.setProfileImageData(profileImageData);
-    //     }
-    //     mav.addObject("user", dbUser);
-    //     return mav;
-    // }
-
-    // @GetMapping("/users/top")
-    // public ModelAndView top(HttpServletRequest request) throws IOException {
-    //     ModelAndView mav = new ModelAndView("UsersTop");
-
-    //     // ユーザーの認証情報を取得
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     String email = authentication.getName();
-    //     Users dbUser = usersMapper.findByMailAddress(email);
-
-    //     // プロフィール画像データをBase64にエンコード
-    //     String profileImageData;
-    //     if (dbUser.getProfileImageData() == null) {
-    //         // プロフィール画像がない場合、デフォルト画像を設定
-    //         byte[] defaultImage = Files.readAllBytes(Paths.get(DEFAULT_IMAGE_PATH));
-    //         profileImageData = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(defaultImage);
-    //         dbUser.setProfileImageData(defaultImage);
-    //     } else {
-    //         // プロフィール画像がある場合、その画像をBase64にエンコードして設定
-    //         byte[] userImage = dbUser.getProfileImageData();
-    //         profileImageData = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(userImage);
-    //         dbUser.setProfileImageData(userImage);  // ユーザーが持つ画像データを再度設定（冗長だが統一のため）
-    //     }
-
-    //     mav.addObject("user", dbUser);
-    //     mav.addObject("profileImageData", profileImageData);
-    //     return mav;
-    // }
-
-
     @GetMapping("/users/top")
     public ModelAndView top(HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("UsersTop");
