@@ -1,9 +1,9 @@
 
 CREATE TABLE Users (
-    userId SERIAL PRIMARY KEY,
-    userName VARCHAR(50) NOT NULL,
-    mailAddress VARCHAR(50) NOT NULL UNIQUE,
+    user_id SERIAL PRIMARY KEY,
+    user_name VARCHAR(50) NOT NULL,
+    mail_address VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL CHECK (CHAR_LENGTH(password) >= 8),
-    selfIntroduction VARCHAR(200) CHECK (CHAR_LENGTH(selfIntroduction) >= 50 AND CHAR_LENGTH(selfIntroduction) <= 200),
-    profileImageData BYTEA  -- 画像データをBase64エンコードした文字列として格納
+    self_introduction VARCHAR(200) CHECK (CHAR_LENGTH(self_introduction) >= 50 AND CHAR_LENGTH(self_introduction) <= 200),
+    profile_image_data BYTEA  -- 画像データをBase64エンコードした文字列として格納
 );

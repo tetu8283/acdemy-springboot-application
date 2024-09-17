@@ -5,28 +5,29 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class Users {
-    private Long userId;
+    private Long userId;  
 
+    // その他のフィールドも合わせてキャメルケースに修正
     @NotBlank(message = "氏名は必ず入力してください")
-    @Size(max = 50, message = "氏名は255文字以内で入力してください")
-    private String userName;
+    @Size(max = 50, message = "氏名は50文字以内で入力してください")
+    private String userName; 
 
     @NotBlank(message = "メールアドレスは必ず入力してください")
     @Email(message = "メールアドレスが正しい形式ではありません")
     @Size(max = 50, message = "メールアドレスは50文字以内で入力してください")
-    private String mailAddress;
+    private String mailAddress; 
 
     @NotBlank(message = "パスワードは必ず入力してください")
-    // @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).{8,}$", message = "英数字8文字以上で入力してください")
     @Size(min = 8, message = "パスワードは8文字以上で入力してください")
     private String password;
 
     @Size(min = 50, max = 200, message = "プロフィール文は50文字以上200文字以下にしてください")
-    private String selfIntroduction = "This is default saltIntroduction message. Please enter over 50 charecters."; // データベースのselfIntroductionに対応
+    private String selfIntroduction = "This is default saltIntroduction message. Please enter over 50 charecters.";
 
     // プロフィール画像をバイト配列として保持
-    private byte[] profileImageData;
+    private byte[] profileImageData; 
 
+    // ゲッターとセッター
     public Long getUserId() {
         return userId;
     }

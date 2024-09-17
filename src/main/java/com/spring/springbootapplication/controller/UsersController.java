@@ -8,8 +8,6 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,9 +40,6 @@ import jakarta.validation.Valid;
  */
 @Controller
 public class UsersController {
-
-    // ログを出力するためのロガー (開発中に動作確認のために使用。開発が終了したら削除)
-    private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 
     // パスワードのエンコードを行うエンコーダー 
     @Autowired
@@ -92,7 +87,7 @@ public class UsersController {
      */
     @PostMapping("/users/login")
     @Transactional
-    public ModelAndView doLogin(
+    public ModelAndView dbLogin(
         @Valid @ModelAttribute("user") Users user,
         BindingResult result,
         HttpServletRequest request,
@@ -109,7 +104,7 @@ public class UsersController {
         }
 
         // ユーザー名をセッションに保存
-        request.getSession().setAttribute("userName", dbUser.getUserName());
+        request.getSession().setAttribute("userName", dbUser.getUserName()); 
 
         // ログイン成功時にトップページにリダイレクト
         return new ModelAndView("redirect:/users/top");
@@ -163,7 +158,7 @@ public class UsersController {
             byte[] defaultImage = Files.readAllBytes(Paths.get(DEFAULT_IMAGE_PATH));
             user.setProfileImageData(defaultImage);
         } catch (IOException e) {
-            logger.error("デフォルト画像の読み込みに失敗しました", e);
+            // なんかやる
         }
 
         usersMapper.insert(user);
@@ -173,12 +168,11 @@ public class UsersController {
             request.login(user.getMailAddress(), rawPassword);
 
             // セッションにユーザー名を保存
-            request.getSession().setAttribute("userName", user.getUserName());
+            request.getSession().setAttribute("userName", user.getUserName()); 
 
             // トップページにリダイレクト
             return new ModelAndView("redirect:/users/top");
         } catch (ServletException e) {
-            logger.error("ログイン処理に失敗しました: {}", e);
             mav.setViewName("UsersSignin");
             mav.addObject("errorMessage", "ログインに失敗しました");
             return mav;
@@ -191,6 +185,61 @@ public class UsersController {
      * @param request HTTPリクエストオブジェクト
      * @return 
      */
+
+    // @GetMapping("/users/top")
+    // public ModelAndView top(HttpServletRequest request) throws IOException{
+    //     ModelAndView mav = new ModelAndView("UsersTop");
+    //     // ユーザの認証情報を保持
+    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //     String email = authentication.getName();  // メールアドレス取得
+    //     Users dbUser = usersMapper.findByMailAddress(email); // メールアドレスで検索
+
+    //     String profileImageData;
+    //     // ユーザが画像データを保持しているかを判定
+    //     if (dbUser.getProfileImageData() == null) {
+    //         // profileImageData = encodeImage(DEFAULT_IMAGE_PATH); // 画像データを保持していないと、no-image.jpegを渡す
+
+    //         /*
+    //          * readAllBytes(Path 〇〇) 指定されたパスのファイルを読んでバイト配列にして返す
+    //          */
+    //         dbUser.setProfileImageData(Files.readAllBytes(Paths.get(DEFAULT_IMAGE_PATH))); // デフォルト画像をユーザーオブジェクトに追加
+    //     } else {
+    //         // 画像をエンコードしてhtmlで表示できるようにしている
+    //         profileImageData = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(dbUser.getProfileImageData());
+    //         // dbUser.setProfileImageData(profileImageData);
+    //     }
+    //     mav.addObject("user", dbUser);
+    //     return mav;
+    // }
+
+    // @GetMapping("/users/top")
+    // public ModelAndView top(HttpServletRequest request) throws IOException {
+    //     ModelAndView mav = new ModelAndView("UsersTop");
+
+    //     // ユーザーの認証情報を取得
+    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //     String email = authentication.getName();
+    //     Users dbUser = usersMapper.findByMailAddress(email);
+
+    //     // プロフィール画像データをBase64にエンコード
+    //     String profileImageData;
+    //     if (dbUser.getProfileImageData() == null) {
+    //         // プロフィール画像がない場合、デフォルト画像を設定
+    //         byte[] defaultImage = Files.readAllBytes(Paths.get(DEFAULT_IMAGE_PATH));
+    //         profileImageData = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(defaultImage);
+    //         dbUser.setProfileImageData(defaultImage);
+    //     } else {
+    //         // プロフィール画像がある場合、その画像をBase64にエンコードして設定
+    //         byte[] userImage = dbUser.getProfileImageData();
+    //         profileImageData = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(userImage);
+    //         dbUser.setProfileImageData(userImage);  // ユーザーが持つ画像データを再度設定（冗長だが統一のため）
+    //     }
+
+    //     mav.addObject("user", dbUser);
+    //     mav.addObject("profileImageData", profileImageData);
+    //     return mav;
+    // }
+
 
     @GetMapping("/users/top")
     public ModelAndView top(HttpServletRequest request) {
@@ -216,6 +265,7 @@ public class UsersController {
         return mav;
     }
 
+
     /**
       * ユーザ編集ページへ遷移
       * @param id urlから取得した値(UserId)をlongで保持
@@ -227,7 +277,7 @@ public class UsersController {
         Users user = usersMapper.findById(id);
         mav.setViewName("UsersEdit");
         mav.addObject("user", user);
-        mav.addObject("user_name", user.getUserName());
+        mav.addObject("userName", user.getUserName()); 
         return mav;
     }
 
@@ -263,7 +313,7 @@ public class UsersController {
         if (selfIntroduction.length() < 50 || selfIntroduction.length() > 200) {
             mav.setViewName("UsersEdit");
             mav.addObject("user", user);
-            mav.addObject("user_name", user.getUserName());
+            mav.addObject("userName", user.getUserName()); 
             mav.addObject("errorMessage", "自己紹介文は50文字以上200文字以下で入力してください。");
             return mav;
         }
@@ -278,10 +328,9 @@ public class UsersController {
             }
         } catch (IOException e) {
             // 画像の読み込みに失敗した場合のエラーハンドリング
-            logger.error("画像の読み込みに失敗しました", e);
             mav.addObject("errorMessage", "画像のアップロードに失敗しました");
             mav.addObject("user", user);
-            mav.addObject("user_name", user.getUserName());
+            mav.addObject("userName", user.getUserName());
             mav.setViewName("UsersEdit");
             return mav;
         }
@@ -297,11 +346,9 @@ public class UsersController {
             byte[] imageBytes = Files.readAllBytes(Paths.get(path));
             return "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
         } catch (IOException e) {
-            logger.error("画像のエンコードに失敗しました: {}", e);
             return "";
         }
     }
-
 
     // これはDBの中身を確認するために作成。
     // SecurituConfigでログインしなくてもDBの中身が確認できるようにアクセス許可を与えている

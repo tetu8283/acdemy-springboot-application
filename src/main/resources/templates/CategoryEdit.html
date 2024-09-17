@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Category Edit page</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/category.css">
+</head>
+<body>
+    <header class="signin-header">
+        <h1 class="header-h1">My Portfolio</h1>
+        <!-- ログアウトボタン -->
+        <form name="logout" class="header-form" th:action="@{/users/logout}" method="post">
+            <button class="header-btn" type="submit">ログアウト</button>
+        </form>
+    </header>
+    <main>
+        <div class="wrapper">
+            <!-- プルダウン作成 -->
+            <select name="month">
+                <option th:value="${thisMonth}" th:text="${thisMonth} + '月'"></option>
+                <option th:value="${lastMonth}" th:text="${lastMonth} + '月'"></option>
+                <option th:value="${monthBeforeLast}" th:text="${monthBeforeLast} + '月'"></option>
+            </select>
+                
+            <div class="category-block">
+                <div class="category-title">
+                    <p>バックエンド</p>
+                </div>
+                <form name="backend" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" th:object="${user}" method="get">
+                    <input type="hidden" name="categoryType" value="1"/> 
+                    <button class="add-btn" type="submit">項目を追加する</button>
+                </form>
+
+                <table class="categorys">
+                    <thead>
+                        <tr>
+                            <th>項目名</th>
+                            <th>学習時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="category-block">
+                <div class="category-title">
+                    <p>フロントエンド</p>
+                </div>
+                
+                <form name="frontend" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" th:object="${user}" method="get">
+                    <input type="hidden" name="categoryType" value="0"/> 
+                    <button class="add-btn" type="submit">項目を追加する</button>
+                </form>
+
+                <table class="categorys">
+                    <thead>
+                        <tr>
+                            <th>項目名</th>
+                            <th>学習時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="category-block">
+                <div class="category-title">
+                    <p>インフラ</p>
+                </div>
+
+                <form name="infrastructure" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" th:object="${user}" method="get">
+                    <input type="hidden" name="categoryType" value="2"/> 
+                    <button class="add-btn" type="submit">項目を追加する</button>
+                </form>
+                
+                <table class="categorys">
+                    <thead>
+                        <tr>
+                            <th>項目名</th>
+                            <th>学習時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p class="footer-p" th:text="${userName}"></p>
+    </footer>
+</body>
+</html>

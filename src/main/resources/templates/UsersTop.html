@@ -3,6 +3,7 @@
 <head>
     <title>Top page</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/category.css">
 </head>
 <body>
     <header class="top-header">
@@ -20,21 +21,27 @@
                     <img th:src="${profileImage}" alt="Profile Image" />
                 </div>
                 <div class="user-name">
-                    <p th:text="${user_name}"></p>
+                    <p th:text="${user_name}"></p> 
                 </div>
             </div>
             <div class="self-introduction">
                 <h2>自己紹介</h2>
-                <p th:text="${self_introduction}"></p>
+                <p th:text="${self_introduction}"></p> 
                 
-                <form name="edit" class="edit-form" th:action="@{/users/edit/{id}(id=${user.userId})}" th:object="${user}" method="get">
+                <form name="edit" class="edit-form" th:action="@{/users/edit/{id}(id=${user.userId})}" th:object="${user}" method="get"> 
                     <button class="edit-btn" type="submit">自己紹介を編集する</button>
                 </form>
             </div>
         </div>
+        <div class="categorys">
+            <h2 class="category-h2">学習チャート</h2>
+            <form name="category-edit" class="category-edit-form" th:action="@{/users/edit/category/{id}(id=${user.userId})}" th:object="${user}" method="get"> 
+                <button class="category-edit-btn" type="submit">編集する</button>
+            </form>
+        </div>
     </main>
     <footer>
-        <p class="footer-p" th:text="${user_name}"></p>
+        <p class="footer-p" th:text="${user_uame}"></p> 
     </footer>
 </body>
 </html>

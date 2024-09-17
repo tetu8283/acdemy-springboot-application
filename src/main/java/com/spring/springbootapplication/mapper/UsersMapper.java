@@ -24,7 +24,7 @@ public interface UsersMapper {
      * @param userId ユーザーのID
      * @return Users 取得されたユーザー
      */
-    Users findById(Long userId);
+    Users findById(Long userId); 
 
     /**
      * メールアドレスとパスワードで一致するユーザーを取得
@@ -33,7 +33,7 @@ public interface UsersMapper {
      * @param password パスワード
      * @return Users 一致するユーザー
      */
-    Users findByMailAddressAndPassword(@Param("mailAddress") String mailAddress, @Param("password") String password);
+    Users findByMailAddressAndPassword(@Param("mailAddress") String mailAddress, @Param("password") String password); 
 
     /**
      * 新しいユーザーを挿入
@@ -54,7 +54,7 @@ public interface UsersMapper {
      *
      * @param userId 削除するユーザーのID
      */
-    void delete(Long userId);
+    void delete(Long userId); 
 
     /**
      * メールアドレスでユーザーを検索
@@ -62,5 +62,5 @@ public interface UsersMapper {
      * @param mailAddress メールアドレス
      * @return Users 一致するユーザー
      */
-    Users findByMailAddress(String mailAddress);
+    Users findByMailAddress(String mailAddress); 
 }

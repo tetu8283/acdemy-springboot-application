@@ -1,0 +1,51 @@
+/* スキル編集ページ */
+.category-block {
+    margin-bottom: 30px;
+}
+
+.categorys {
+    width: 100%;
+    border-collapse: collapse; /* セルの間のスペースをなくす */
+    border-top: 1px solid #EEEEEE; /* 上の枠線を追加 */
+}
+
+/* ヘッダーと各行の下にのみ線を引く */
+.categorys th, .categorys td {
+    border-bottom: 1px solid #EEEEEE; /* 横線のみを引く */
+    padding: 10px; /* セルの内側の余白を設定 */
+    text-align: left; /* テキストを左寄せにする */
+}
+
+/* テーブルの最後の行の戦を削除 */
+.categorys tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+
+/* スキル新規登録 */
+
+
+
+.category-p {
+    text-align: center;
+    font-size: 36px;
+    margin-top: 30px;
+
+}
+
+.input-category {
+    margin-top: 100px;
+}
+
+.input-category,
+.input-learning-time {
+    margin-bottom: 60px;
+    
+}
+
+.input-category p,
+.input-learning-time p {
+    font-size: 12px;
+    font-weight: 400;
+}

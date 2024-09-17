@@ -2,41 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.springbootapplication.mapper.UsersMapper">
     
+
+    <!-- Users.javaとカラム名でスネークケースとキャメルケースで異なるため、asを使用 -->
+     
     <!-- すべてのユーザーを取得 -->
     <select id="findAll" resultType="com.spring.springbootapplication.entity.Users">
-        SELECT userId, userName, mailAddress, password, selfIntroduction, profileImageData FROM Users
+        SELECT user_id AS userId, user_name AS userName, mail_address AS mailAddress, password, 
+            self_introduction AS selfIntroduction, profile_image_data AS profileImageData FROM Users
     </select>
     
     <!-- ユーザーを検索して、メアドとパスが一致したものを取得 (ログイン処理) -->
     <select id="findByMailAddressAndPassword" parameterType="map" resultType="com.spring.springbootapplication.entity.Users">
-        SELECT * FROM Users WHERE mailAddress = #{mailAddress} AND password = #{password}
+        SELECT user_id AS userId, user_name AS userName, mail_address AS mailAddress, password, 
+            self_introduction AS selfIntroduction, profile_image_data AS profileImageData 
+        FROM Users WHERE mail_address = #{mailAddress} AND password = #{password}
     </select>
 
     <!-- メールアドレスでユーザーを検索 -->
     <select id="findByMailAddress" parameterType="string" resultType="com.spring.springbootapplication.entity.Users">
-        SELECT * FROM Users WHERE mailAddress = #{mailAddress}
+        SELECT user_id AS userId, user_name AS userName, mail_address AS mailAddress, password, 
+            self_introduction AS selfIntroduction, profile_image_data AS profileImageData 
+        FROM Users WHERE mail_address = #{mailAddress}
     </select>
 
     <!-- idでユーザ検索(editで使用) -->
     <select id="findById" parameterType="long" resultType="com.spring.springbootapplication.entity.Users">
-        SELECT * FROM Users WHERE userId = #{userId}
+        SELECT user_id AS userId, user_name AS userName, mail_address AS mailAddress, password, 
+            self_introduction AS selfIntroduction, profile_image_data AS profileImageData 
+        FROM Users WHERE user_id = #{userId}
     </select>
     
     <!-- 新しいユーザーを挿入 -->
     <insert id="insert" parameterType="com.spring.springbootapplication.entity.Users">
-        INSERT INTO Users(userName, mailAddress, password, selfIntroduction, profileImageData) 
+        INSERT INTO Users(user_name, mail_address, password, self_introduction, profile_image_data) 
         VALUES(#{userName}, #{mailAddress}, #{password}, #{selfIntroduction}, #{profileImageData})
     </insert>
     
     <!-- ユーザー情報を更新 -->
     <update id="update" parameterType="com.spring.springbootapplication.entity.Users">
         UPDATE Users 
-        SET selfIntroduction=#{selfIntroduction}, profileImageData=#{profileImageData}
-        WHERE userId = #{userId}
+        SET self_introduction=#{selfIntroduction}, profile_image_data=#{profileImageData}
+        WHERE user_id = #{userId}
     </update>
     
     <!-- ユーザーを削除 -->
     <delete id="delete" parameterType="long">
-        DELETE FROM Users WHERE userId = #{userId}
+        DELETE FROM Users WHERE user_id = #{userId}
     </delete>
 </mapper>
