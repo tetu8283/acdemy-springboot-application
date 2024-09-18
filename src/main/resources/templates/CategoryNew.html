@@ -16,8 +16,12 @@
     <main>
         <form class="add-category-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" method="post">
             <p class="category-p" th:text="${categoryTypeName} + 'に項目を追加'"></p> 
-            
+
+            <!-- ユーザは入力しないためhiddenでセット -->
             <input type="hidden" name="categoryType" th:value="${categoryType}" />
+            <input type="hidden" name="learningYear" th:value="${learningYear}" />
+            <input type="hidden" name="learningMonth" th:value="${selectedMonth}"/> 
+            
             <div class="input-category">
                 <p>項目名</p>
                 <input type="text" class="input-form" name="category" required>
@@ -25,7 +29,7 @@
             
             <div class="input-learning-time">
                 <p>学習時間</p>
-                <input type="number" step="1" min="0" max="900" class="input-form" name="learning-time" required>
+                <input type="number" step="1" min="0" max="900" class="input-form" name="learningTime" required>
             </div>
             <button class="submit-category-btn" type="submit">追加する</button>
         </form>

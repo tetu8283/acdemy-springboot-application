@@ -24,7 +24,7 @@ public interface UsersMapper {
      * @param userId ユーザーのID
      * @return Users 取得されたユーザー
      */
-    Users findById(Long userId); 
+    Users findById(Integer userId); 
 
     /**
      * メールアドレスとパスワードで一致するユーザーを取得
@@ -54,7 +54,7 @@ public interface UsersMapper {
      *
      * @param userId 削除するユーザーのID
      */
-    void delete(Long userId); 
+    void delete(Integer userId); 
 
     /**
      * メールアドレスでユーザーを検索

@@ -213,12 +213,12 @@ public class UsersController {
 
     /**
       * ユーザ編集ページへ遷移
-      * @param id urlから取得した値(UserId)をlongで保持
+      * @param id urlから取得した値(UserId)をIntegerで保持
       * @param mav 
       * @return 
       */
     @GetMapping("/users/edit/{id}")
-    public ModelAndView editForm(@PathVariable Long id, ModelAndView mav) {
+    public ModelAndView editForm(@PathVariable Integer id, ModelAndView mav) {
         Users user = usersMapper.findById(id);
         mav.setViewName("UsersEdit");
         mav.addObject("user", user);
@@ -239,7 +239,7 @@ public class UsersController {
 
     @PostMapping("/users/update/{id}")
     @Transactional
-    public ModelAndView update(@PathVariable Long id,
+    public ModelAndView update(@PathVariable Integer id,
                                 @RequestParam("file") MultipartFile file,
                                 @ModelAttribute Users user, // @Validを外して手動でバリデーションする
                                 BindingResult result,

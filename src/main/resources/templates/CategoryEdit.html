@@ -15,12 +15,16 @@
     </header>
     <main>
         <div class="wrapper">
-            <!-- プルダウン作成 -->
-            <select name="month">
-                <option th:value="${thisMonth}" th:text="${thisMonth} + '月'"></option>
-                <option th:value="${lastMonth}" th:text="${lastMonth} + '月'"></option>
-                <option th:value="${monthBeforeLast}" th:text="${monthBeforeLast} + '月'"></option>
-            </select>
+            <!-- <form class="select-month" th:action=""> -->
+                <!-- プルダウン作成 -->
+                <select name="month">
+                    <!-- <option th:value="" th:text="${thisMonth} + '月'" selected></option> -->
+                    <option th:value="${thisMonth}" th:text="${thisMonth} + '月'"></option>
+                    <option th:value="${lastMonth}" th:text="${lastMonth} + '月'"></option>
+                    <option th:value="${monthBeforeLast}" th:text="${monthBeforeLast} + '月'"></option>
+                </select>
+            <!-- </form> -->
+            
                 
             <div class="category-block">
                 <div class="category-title">
@@ -28,6 +32,7 @@
                 </div>
                 <form name="backend" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" th:object="${user}" method="get">
                     <input type="hidden" name="categoryType" value="1"/> 
+                    <input type="hidden" name="learningYear" th:value="${learningYear}"/> 
                     <button class="add-btn" type="submit">項目を追加する</button>
                 </form>
 
@@ -50,6 +55,7 @@
                 
                 <form name="frontend" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" th:object="${user}" method="get">
                     <input type="hidden" name="categoryType" value="0"/> 
+                    <input type="hidden" name="learningYear" th:value="${learningYear}"/> 
                     <button class="add-btn" type="submit">項目を追加する</button>
                 </form>
 
@@ -72,6 +78,7 @@
 
                 <form name="infrastructure" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" th:object="${user}" method="get">
                     <input type="hidden" name="categoryType" value="2"/> 
+                    <input type="hidden" name="learningYear" th:value="${learningYear}"/> 
                     <button class="add-btn" type="submit">項目を追加する</button>
                 </form>
                 

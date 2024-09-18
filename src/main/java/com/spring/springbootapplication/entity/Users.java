@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class Users {
-    private Long userId;  
+    private Integer userId;  
 
     // その他のフィールドも合わせてキャメルケースに修正
     @NotBlank(message = "氏名は必ず入力してください")
@@ -28,11 +28,11 @@ public class Users {
     private byte[] profileImageData; 
 
     // ゲッターとセッター
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

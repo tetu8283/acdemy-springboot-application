@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.springbootapplication.mapper.UsersMapper">
     
-
-    <!-- Users.javaとカラム名でスネークケースとキャメルケースで異なるため、asを使用 -->
-     
+    <!-- ResultMapの定義 -->
+    <resultMap id="UserResultMap" type="com.spring.springbootapplication.entity.Users">
+        <id property="userId" column="user_id" />
+        <result property="userName" column="user_name" />
+        <result property="mailAddress" column="mail_address" />
+        <result property="password" column="password" />
+        <result property="selfIntroduction" column="self_introduction" />
+        <result property="profileImageData" column="profile_image_data" />
+    </resultMap>
+    
     <!-- すべてのユーザーを取得 -->
-    <select id="findAll" resultType="com.spring.springbootapplication.entity.Users">
-        SELECT user_id AS userId, user_name AS userName, mail_address AS mailAddress, password, 
-            self_introduction AS selfIntroduction, profile_image_data AS profileImageData FROM Users
+    <select id="findAll" resultMap="UserResultMap">
+        SELECT user_id, user_name, mail_address, password, self_introduction, profile_image_data 
+        FROM Users
     </select>
     
-    <!-- ユーザーを検索して、メアドとパスが一致したものを取得 (ログイン処理) -->
-    <select id="findByMailAddressAndPassword" parameterType="map" resultType="com.spring.springbootapplication.entity.Users">
-        SELECT user_id AS userId, user_name AS userName, mail_address AS mailAddress, password, 
-            self_introduction AS selfIntroduction, profile_image_data AS profileImageData 
-        FROM Users WHERE mail_address = #{mailAddress} AND password = #{password}
+    <!-- ユーザーを検索して、メールアドレスとパスワードが一致したものを取得 (ログイン処理) -->
+    <select id="findByMailAddressAndPassword" parameterType="map" resultMap="UserResultMap">
+        SELECT user_id, user_name, mail_address, password, self_introduction, profile_image_data 
+        FROM Users 
+        WHERE mail_address = #{mailAddress} AND password = #{password}
     </select>
 
     <!-- メールアドレスでユーザーを検索 -->
-    <select id="findByMailAddress" parameterType="string" resultType="com.spring.springbootapplication.entity.Users">
-        SELECT user_id AS userId, user_name AS userName, mail_address AS mailAddress, password, 
-            self_introduction AS selfIntroduction, profile_image_data AS profileImageData 
-        FROM Users WHERE mail_address = #{mailAddress}
+    <select id="findByMailAddress" parameterType="string" resultMap="UserResultMap">
+        SELECT user_id, user_name, mail_address, password, self_introduction, profile_image_data 
+        FROM Users 
+        WHERE mail_address = #{mailAddress}
     </select>
 
-    <!-- idでユーザ検索(editで使用) -->
-    <select id="findById" parameterType="long" resultType="com.spring.springbootapplication.entity.Users">
-        SELECT user_id AS userId, user_name AS userName, mail_address AS mailAddress, password, 
-            self_introduction AS selfIntroduction, profile_image_data AS profileImageData 
-        FROM Users WHERE user_id = #{userId}
+    <!-- idでユーザーを検索(editで使用) -->
+    <select id="findById" parameterType="Integer" resultMap="UserResultMap">
+        SELECT user_id, user_name, mail_address, password, self_introduction, profile_image_data 
+        FROM Users 
+        WHERE user_id = #{userId}
     </select>
     
     <!-- 新しいユーザーを挿入 -->
@@ -46,7 +55,7 @@
     </update>
     
     <!-- ユーザーを削除 -->
-    <delete id="delete" parameterType="long">
+    <delete id="delete" parameterType="Integer">
         DELETE FROM Users WHERE user_id = #{userId}
     </delete>
 </mapper>

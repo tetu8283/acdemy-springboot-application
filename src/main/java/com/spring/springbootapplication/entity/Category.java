@@ -1,43 +1,43 @@
 package com.spring.springbootapplication.entity;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class Category {
 
-    private Long id;
+    private Integer categoryId;
 
-    @NotNull(message = "カテゴリIDは必ず入力してください")
-    private Integer category_id;
+    @NotBlank
+    private Integer categoryType;
 
     @NotBlank(message = "カテゴリ名は必ず入力してください")
     @Size(max = 20, message = "カテゴリ名は20文字以内で入力してください")
-    private String category_name;
+    private String categoryName;
 
     // ゲッターとセッター
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Integer getCategoryId() {
-        return category_id;
+        return categoryId;
     }
 
-    public void setCategoryId(Integer category_id) {
-        this.category_id = category_id;
+    //これでカテゴリがバックエンド、フロント、インフラかを判定
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Integer getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(Integer categoryType) {
+        this.categoryType = categoryType;
     }
 
     public String getCategoryName() {
-        return category_name;
+        return categoryName;
     }
 
-    public void setCategoryName(String category_name) {
-        this.category_name = category_name;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
 }
