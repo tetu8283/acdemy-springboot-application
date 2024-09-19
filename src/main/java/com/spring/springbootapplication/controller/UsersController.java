@@ -85,9 +85,42 @@ public class UsersController {
      * @param mav 
      * @return 
      */
+    // @PostMapping("/users/login")
+    // @Transactional
+    // public ModelAndView dbLogin(
+    //     @Valid @ModelAttribute("user") Users user,
+    //     BindingResult result,
+    //     HttpServletRequest request,
+    //     ModelAndView mav
+    // ) {
+    //     // メールアドレスとパスワードでユーザーを検索
+    //     Users dbUser = usersMapper.findByMailAddressAndPassword(user.getMailAddress(), user.getPassword());
+
+    //     // ユーザーが見つからない、またはバリデーションエラーが発生した場合
+    //     if (dbUser == null || result.hasErrors()) {
+    //         mav.setViewName("UsersLogin");
+    //         mav.addObject("user", user);  // 入力したユーザー情報を保持
+    //         return mav;
+    //     }
+
+    //     // ユーザー名をセッションに保存
+    //     request.getSession().setAttribute("userName", dbUser.getUserName()); 
+
+    //     // ログイン成功時にトップページにリダイレクト
+    //     return new ModelAndView("redirect:/users/top");
+    // }
+
+    /**
+     * ログイン処理
+     * @param user ログイン情報を持つユーザーオブジェクト
+     * @param result バリデーション結果
+     * @param request HTTPリクエストオブジェクト
+     * @param mav 
+     * @return 
+     */
     @PostMapping("/users/login")
     @Transactional
-    public ModelAndView dbLogin(
+    public ModelAndView doLogin(
         @Valid @ModelAttribute("user") Users user,
         BindingResult result,
         HttpServletRequest request,
@@ -95,17 +128,14 @@ public class UsersController {
     ) {
         // メールアドレスとパスワードでユーザーを検索
         Users dbUser = usersMapper.findByMailAddressAndPassword(user.getMailAddress(), user.getPassword());
-
         // ユーザーが見つからない、またはバリデーションエラーが発生した場合
         if (dbUser == null || result.hasErrors()) {
             mav.setViewName("UsersLogin");
             mav.addObject("user", user);  // 入力したユーザー情報を保持
             return mav;
         }
-
         // ユーザー名をセッションに保存
-        request.getSession().setAttribute("userName", dbUser.getUserName()); 
-
+        request.getSession().setAttribute("userName", dbUser.getUserName());
         // ログイン成功時にトップページにリダイレクト
         return new ModelAndView("redirect:/users/top");
     }

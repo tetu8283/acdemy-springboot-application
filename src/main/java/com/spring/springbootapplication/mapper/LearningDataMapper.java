@@ -9,7 +9,7 @@ public interface LearningDataMapper {
  * 
  * @param learningData
  */
-    void insertCategory(LearningData learningData);
+    void insertLearningData(LearningData learningData);
 
     List<LearningData> findAll();
 } 

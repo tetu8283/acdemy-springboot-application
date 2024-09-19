@@ -56,6 +56,7 @@ public class CategoryController {
         mav.addObject("thisMonth", thisMonth);
         mav.addObject("lastMonth", lastMonth);
         mav.addObject("monthBeforeLast", monthBeforeLast);
+        mav.addObject("learningYear", learningYear);
         return mav;
     }
 
@@ -139,10 +140,7 @@ public class CategoryController {
         learningData.setLearningTime(learningTime);
 
         categoryMapper.insertCategory(category); // insert実行
-
-        /* 以下のインサート文を実行できるようにする */
-
-        // learningDataMapper.insertLearningData();
+        learningDataMapper.insertLearningData(learningData); // insert実行
 
         mav.setViewName("CategoryNew");
         mav.addObject("user", user);
