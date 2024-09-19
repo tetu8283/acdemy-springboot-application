@@ -10,7 +10,7 @@
 
     <!-- カテゴリを挿入 -->
     <insert id="insertCategory" parameterType="com.spring.springbootapplication.entity.Category">
-        INSERT INTO Category(category_id, category_type, category_name) VALUES(#{category_id}, #{category_type}, #{category_name})
+        INSERT INTO Category(category_type, category_name) VALUES(#{category_type}, #{category_name})
     </insert>
 
 

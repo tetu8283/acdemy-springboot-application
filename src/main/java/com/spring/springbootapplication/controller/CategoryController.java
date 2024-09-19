@@ -83,7 +83,7 @@ public class CategoryController {
         mav.setViewName("CategoryNew");
         mav.addObject("user", user);
         mav.addObject("user_name", user.getUserName());
-        mav.addObject("categoryTyle", categoryType);
+        mav.addObject("categoryType", categoryType);
 
         // 0, 1, 2でカテゴリを判定後、addする
         String categoryTypeName;
@@ -126,12 +126,13 @@ public class CategoryController {
                                         @RequestParam("learningTime") int learningTime, //入力された学習時間受け取り
                                         ModelAndView mav) {
         Users user = usersMapper.findById(id);
-
         Category category = new Category();
         LearningData learningData = new LearningData();
-
+        
         category.setCategoryType(categoryType); // カテゴリタイプセット
         category.setCategoryName(categoryName); // カテゴリ名セット
+        
+        categoryMapper.insertCategory(category); // insert実行(カテゴリIDが必要なため先に実行)
 
         learningData.setUserId(id);
         learningData.setCategoryId(category.getCategoryId());
@@ -139,7 +140,7 @@ public class CategoryController {
         learningData.setLearningMonth(learningMonth);
         learningData.setLearningTime(learningTime);
 
-        categoryMapper.insertCategory(category); // insert実行
+        
         learningDataMapper.insertLearningData(learningData); // insert実行
 
         mav.setViewName("CategoryNew");

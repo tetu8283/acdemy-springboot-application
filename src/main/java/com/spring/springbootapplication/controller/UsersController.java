@@ -69,6 +69,7 @@ public class UsersController {
      */
     @GetMapping("/users/login")
     public ModelAndView login(ModelAndView mav, boolean error) {
+
         mav.setViewName("UsersLogin");
         // errorのTFはconfigファイルで判定、格納をしている
         if (error) {
@@ -221,7 +222,7 @@ public class UsersController {
         Users user = usersMapper.findById(id);
         mav.setViewName("UsersEdit");
         mav.addObject("user", user);
-        mav.addObject("userName", user.getUserName()); 
+        mav.addObject("user_name", user.getUserName()); 
         return mav;
     }
 
