@@ -86,30 +86,30 @@ public class UsersController {
      * @param mav 
      * @return 
      */
-    @PostMapping("/users/login")
-    @Transactional
-    public ModelAndView dbLogin(
-        @Valid @ModelAttribute("user") Users user,
-        BindingResult result,
-        HttpServletRequest request,
-        ModelAndView mav
-    ) {
+    // @PostMapping("/users/login")
+    // @Transactional
+    // public ModelAndView dbLogin(
+    //     @Valid @ModelAttribute("user") Users user,
+    //     BindingResult result,
+    //     HttpServletRequest request,
+    //     ModelAndView mav
+    // ) {
 
-        Users dbUser = usersMapper.findByMailAddress(user.getMailAddress());
+    //     Users dbUser = usersMapper.findByMailAddress(user.getMailAddress());
 
-        if (dbUser == null || !passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-            mav.setViewName("UsersLogin");
-            mav.addObject("user", user);
-            mav.addObject("loginError", "メールアドレスまたはパスワードが正しくありません。");
-            return mav;
-        }
+    //     if (dbUser == null || !passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
+    //         mav.setViewName("UsersLogin");
+    //         mav.addObject("user", user);
+    //         mav.addObject("loginError", "メールアドレスまたはパスワードが正しくありません。");
+    //         return mav;
+    //     }
 
-        // ユーザー名をセッションに保存
-        request.getSession().setAttribute("userName", dbUser.getUserName()); 
+    //     // ユーザー名をセッションに保存
+    //     request.getSession().setAttribute("userName", dbUser.getUserName()); 
 
-        // ログイン成功時にトップページにリダイレクト
-        return new ModelAndView("redirect:/users/top");
-    }
+    //     // ログイン成功時にトップページにリダイレクト
+    //     return new ModelAndView("redirect:/users/top");
+    // }
 
     /**
      * サインインページを表示

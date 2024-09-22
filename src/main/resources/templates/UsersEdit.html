@@ -23,6 +23,7 @@
             
             <div class="self-introduction-section">
                 <p class="edit-p">自己紹介文</p>
+                <!-- th:field="*{selfIntroduction}"はオブジェクトのselfIntroductionに入力された値を自動でマッピングする -->
                 <textarea class="edit-self-introduction" th:field="*{selfIntroduction}"></textarea> 
                 <!-- バリデーションメッセージ表示 -->
                 <p th:text="${errorMessage}" class="edit-error-message"></p>

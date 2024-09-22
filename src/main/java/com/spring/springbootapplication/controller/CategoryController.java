@@ -1,7 +1,6 @@
 package com.spring.springbootapplication.controller;
 
 import java.util.Calendar;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +37,7 @@ public class CategoryController {
      * @return 
      */
     @GetMapping("/users/edit/category/{id}")
-    public ModelAndView categoryeditForm(@PathVariable Integer id, ModelAndView mav) {
+    public ModelAndView categoryEditForm(@PathVariable Integer id, ModelAndView mav) {
         Users user = usersMapper.findById(id);
         Calendar calendar = Calendar.getInstance();
 
@@ -57,14 +56,6 @@ public class CategoryController {
         mav.addObject("lastMonth", lastMonth);
         mav.addObject("monthBeforeLast", monthBeforeLast);
         mav.addObject("learningYear", learningYear);
-        return mav;
-    }
-
-    @GetMapping("users/category/list")
-    public ModelAndView categoryList(ModelAndView mav){
-        mav.setViewName("CategoryList");
-        List<Category> categoryList = categoryMapper.findAll();
-        mav.addObject("categoryList", categoryList);
         return mav;
     }
 

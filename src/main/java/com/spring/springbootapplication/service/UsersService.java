@@ -15,6 +15,40 @@ import com.spring.springbootapplication.mapper.UsersMapper;
  * ユーザーの認証に使用されるサービスクラス
  * Spring SecurityのUserDetailsServiceを実装
  */
+// @Service 
+// public class UsersService implements UserDetailsService {
+
+//     @Autowired 
+//     private UsersMapper usersMapper;
+
+//     /**
+//      * 認証に使用
+//      * メールアドレスを用いてユーザーをデータベースから取得し、認証情報を返す
+//      * 
+//      * @param username 認証に使用するメールアドレス
+//      * @return UserDetails 認証に使用されるユーザーデータ
+//      * @throws UsernameNotFoundException ユーザーが見つからない場合にスローされる例外
+//      */
+//     @Override
+//     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//         // メールアドレスでユーザーをデータベースから取得
+//         Users user = usersMapper.findByMailAddress(username);
+        
+//         // ユーザーが存在しない場合、例外をスローしてエラーメッセージを表示
+//         if (user == null) {
+//             throw new UsernameNotFoundException("ユーザーが見つかりません: " + username);
+//         }
+        
+//         // 認証に必要なUserDetailsオブジェクトを生成し返す
+//         return new org.springframework.security.core.userdetails.User(
+//             user.getMailAddress(), 
+//             user.getPassword(), 
+//             Collections.emptyList()
+//         );
+//     }
+// }
+
+
 @Service 
 public class UsersService implements UserDetailsService {
 
@@ -22,24 +56,22 @@ public class UsersService implements UserDetailsService {
     private UsersMapper usersMapper;
 
     /**
-     * 認証に使用
-     * メールアドレスを用いてユーザーをデータベースから取得し、認証情報を返す
-     * 
-     * @param username 認証に使用するメールアドレス
-     * @return UserDetails 認証に使用されるユーザーデータ
-     * @throws UsernameNotFoundException ユーザーが見つからない場合にスローされる例外
+     * メールアドレスを用いてユーザーを取得し、認証情報を返す
+     * @param username メールアドレス
+     * @return UserDetails 認証に使用されるユーザー情報
+     * @throws UsernameNotFoundException ユーザーが見つからない場合の例外
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // メールアドレスでユーザーをデータベースから取得
+        // メールアドレスでユーザーを検索
         Users user = usersMapper.findByMailAddress(username);
-        
-        // ユーザーが存在しない場合、例外をスローしてエラーメッセージを表示
+
+        // ユーザーが存在しない場合は例外をスロー
         if (user == null) {
             throw new UsernameNotFoundException("ユーザーが見つかりません: " + username);
         }
-        
-        // 認証に必要なUserDetailsオブジェクトを生成し返す
+
+        // 認証に必要なUserDetailsオブジェクトを返す
         return new org.springframework.security.core.userdetails.User(
             user.getMailAddress(), 
             user.getPassword(), 
