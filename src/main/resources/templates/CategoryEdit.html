@@ -18,7 +18,6 @@
             <!-- <form class="select-month" th:action=""> -->
                 <!-- プルダウン作成 -->
                 <select name="month">
-                    <!-- <option th:value="" th:text="${thisMonth} + '月'" selected></option> -->
                     <option th:value="${thisMonth}" th:text="${thisMonth} + '月'"></option>
                     <option th:value="${lastMonth}" th:text="${lastMonth} + '月'"></option>
                     <option th:value="${monthBeforeLast}" th:text="${monthBeforeLast} + '月'"></option>
@@ -97,7 +96,7 @@
         </div>
     </main>
     <footer>
-        <p class="footer-p" th:text="${user_name}"></p>
+        <p class="footer-p" th:text="${user.userName}"></p>
     </footer>
 </body>
 </html>

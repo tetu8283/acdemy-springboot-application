@@ -79,39 +79,6 @@ public class UsersController {
     }
 
     /**
-     * ログイン処理
-     * @param user ログイン情報を持つユーザーオブジェクト
-     * @param result バリデーション結果
-     * @param request HTTPリクエストオブジェクト
-     * @param mav 
-     * @return 
-     */
-    // @PostMapping("/users/login")
-    // @Transactional
-    // public ModelAndView dbLogin(
-    //     @Valid @ModelAttribute("user") Users user,
-    //     BindingResult result,
-    //     HttpServletRequest request,
-    //     ModelAndView mav
-    // ) {
-
-    //     Users dbUser = usersMapper.findByMailAddress(user.getMailAddress());
-
-    //     if (dbUser == null || !passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-    //         mav.setViewName("UsersLogin");
-    //         mav.addObject("user", user);
-    //         mav.addObject("loginError", "メールアドレスまたはパスワードが正しくありません。");
-    //         return mav;
-    //     }
-
-    //     // ユーザー名をセッションに保存
-    //     request.getSession().setAttribute("userName", dbUser.getUserName()); 
-
-    //     // ログイン成功時にトップページにリダイレクト
-    //     return new ModelAndView("redirect:/users/top");
-    // }
-
-    /**
      * サインインページを表示
      *
      * @param mav 
@@ -204,8 +171,6 @@ public class UsersController {
         }
         mav.addObject("user", dbUser);
         mav.addObject("profileImage", profileImage);
-        mav.addObject("user_name", dbUser.getUserName());
-        mav.addObject("self_introduction", dbUser.getSelfIntroduction());
 
         return mav;
     }
@@ -219,10 +184,9 @@ public class UsersController {
       */
     @GetMapping("/users/edit/{id}")
     public ModelAndView editForm(@PathVariable Integer id, ModelAndView mav) {
-        Users user = usersMapper.findById(id);
+        Users dbUser = usersMapper.findById(id);
         mav.setViewName("UsersEdit");
-        mav.addObject("user", user);
-        mav.addObject("user_name", user.getUserName()); 
+        mav.addObject("user", dbUser);
         return mav;
     }
 
@@ -258,7 +222,6 @@ public class UsersController {
         if (selfIntroduction.length() < 50 || selfIntroduction.length() > 200) {
             mav.setViewName("UsersEdit");
             mav.addObject("user", user);
-            mav.addObject("userName", user.getUserName()); 
             mav.addObject("errorMessage", "自己紹介文は50文字以上200文字以下で入力してください。");
             return mav;
         }
@@ -275,7 +238,6 @@ public class UsersController {
             // 画像の読み込みに失敗した場合のエラーハンドリング
             mav.addObject("errorMessage", "画像のアップロードに失敗しました");
             mav.addObject("user", user);
-            mav.addObject("userName", user.getUserName());
             mav.setViewName("UsersEdit");
             return mav;
         }
@@ -303,10 +265,12 @@ public class UsersController {
      * @return ModelAndView ユーザー一覧ページ
      */
     @GetMapping("/users/list")
-    public ModelAndView getUsersList() {
-        ModelAndView mav = new ModelAndView("UsersList");
+    public ModelAndView getUsersList(ModelAndView mav) {
+        mav.setViewName("UsersList");
         List<Users> userList = usersMapper.findAll(); // ユーザーのリストを取得
+
         mav.addObject("userList", userList); // ユーザーリストをモデルに追加
+
         return mav;
     }
 }

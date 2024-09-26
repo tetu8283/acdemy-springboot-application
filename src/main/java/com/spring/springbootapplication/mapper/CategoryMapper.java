@@ -12,5 +12,19 @@ public interface CategoryMapper {
      */
     void insertCategory(Category category);
 
+    /**
+     * 
+     * @param categoryId
+     * @return
+     */
+    Category findCategoryById(Integer categoryId); 
+
+    /**
+     * カテゴリタイプでデータを取得
+     * @param categoryType
+     * @return
+     */
+    List<Category> findCategoriesByType(int categoryType);
+
     List<Category> findAll();
 }

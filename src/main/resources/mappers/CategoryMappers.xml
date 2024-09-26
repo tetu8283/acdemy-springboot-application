@@ -13,6 +13,16 @@
         INSERT INTO Category(category_type, category_name) VALUES(#{category_type}, #{category_name})
     </insert>
 
+    <!-- idでカテゴリを検索 -->
+    <select id="findCategoryById" parameterType="Integer" resultMap="CategoryResultMap">
+        SELECT * FROM category WHERE category_id = #{categoryId}
+    </select>
+
+    <!-- カテゴリタイプで取得 -->
+    <select id="findCategoriesByType" parameterType="int" resultMap="CategoryResultMap">
+        SELECT * FROM Category WHERE category_type = #{categoryType}
+    </select>
+
 
     <select id="findAll" resultType="com.spring.springbootapplication.entity.Category">
         SELECT category_id, category_type, category_name FROM Category

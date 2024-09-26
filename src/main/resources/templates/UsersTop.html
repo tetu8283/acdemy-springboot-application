@@ -21,12 +21,12 @@
                     <img th:src="${profileImage}" alt="Profile Image" />
                 </div>
                 <div class="user-name">
-                    <p th:text="${user_name}"></p> 
+                    <p th:text="${user.userName}"></p> 
                 </div>
             </div>
             <div class="self-introduction">
                 <h2>自己紹介</h2>
-                <p th:text="${self_introduction}"></p> 
+                <p th:text="${user.selfIntroduction}"></p> 
                 
                 <form name="edit" class="edit-form" th:action="@{/users/edit/{id}(id=${user.userId})}" th:object="${user}" method="get"> 
                     <button class="edit-btn" type="submit">自己紹介を編集する</button>
@@ -41,7 +41,8 @@
         </div>
     </main>
     <footer>
-        <p class="footer-p" th:text="${user_name}"></p> 
+        
+        <p class="footer-p" th:text="${user.userName}"></p> 
     </footer>
 </body>
 </html>

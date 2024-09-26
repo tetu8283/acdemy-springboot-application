@@ -12,4 +12,7 @@ public interface LearningDataMapper {
     void insertLearningData(LearningData learningData);
 
     List<LearningData> findAll();
+
+
+    // バックエンド、フロント、インフラをwhere categoryTyle = 0, 1, 2で判別してlistに格納する
 } 
