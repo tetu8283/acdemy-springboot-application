@@ -14,14 +14,14 @@ public interface CategoryMapper {
     void insertCategory(Category category);
 
     /**
-     * カテゴリIDでカテゴリを検索
+     * カテゴリidでカテゴリを検索
      * @param categoryId
      * @return
      */
     Category findCategoryById(Integer categoryId); 
 
     /**
-     * カテゴリタイプとユーザIDでデータを取得
+     * カテゴリタイプとユーザーidでカテゴリを取得
      * @param categoryType
      * @param userId
      * @return
@@ -29,26 +29,27 @@ public interface CategoryMapper {
     List<Category> findCategoriesByTypeAndUserId(@Param("categoryType") int categoryType, @Param("userId") Integer userId);
 
     /**
-     * カテゴリ名、タイプ、ユーザIDでカテゴリ検索
+     * カテゴリ名、カテゴリタイプ、ユーザーidでカテゴリを検索
      * @param categoryName
      * @param categoryType
      * @param userId
      * @return
      */
-    Category findByCategoryNameAndTypeAndUserId(@Param("categoryName") String categoryName, @Param("categoryType") Integer categoryType, @Param("userId") Integer userId);
+    Category findByCategoryNameAndTypeAndUserId(@Param("categoryName") String categoryName, 
+                                                @Param("categoryType") Integer categoryType, 
+                                                @Param("userId") Integer userId);
 
     /**
-     * カテゴリを削除（ユーザIDで確認）
+     * カテゴリを削除（カテゴリidとユーザーidで確認）
      * @param categoryId
      * @param userId
      */
     void deleteByCategoryIdAndUserId(@Param("categoryId") Integer categoryId, @Param("userId") Integer userId);
 
     /**
-     * ユーザーIDでカテゴリを取得
+     * ユーザーidでカテゴリを取得
      * @param userId
      * @return
      */
     List<Category> findCategoriesByUserId(Integer userId);
-
 }

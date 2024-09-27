@@ -3,7 +3,7 @@ package com.spring.springbootapplication.entity;
 import jakarta.validation.constraints.NotNull;
 
 public class LearningData {
-    private Integer id;
+    private Integer learningId;
 
     @NotNull
     private Integer userId;
@@ -22,12 +22,12 @@ public class LearningData {
 
 
     // ゲッターとセッター
-    public Integer getId() {
-        return id;
+    public Integer getLearningId() {
+        return learningId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setlearningId(Integer learningId) {
+        this.learningId = learningId;
     }
 
     public Integer getUserId() {

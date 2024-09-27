@@ -11,7 +11,7 @@ public class Category {
     @NotNull
     private Integer userId;
 
-    @NotBlank
+    @NotNull 
     private Integer categoryType;
 
     @NotBlank(message = "カテゴリ名は必ず入力してください")
@@ -23,7 +23,6 @@ public class Category {
         return categoryId;
     }
 
-    
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
     }
@@ -36,7 +35,6 @@ public class Category {
         this.userId = userId;
     }
 
-    //これでカテゴリがバックエンド、フロント、インフラかを判定
     public Integer getCategoryType() {
         return categoryType;
     }

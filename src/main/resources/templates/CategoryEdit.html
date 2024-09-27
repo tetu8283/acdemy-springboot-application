@@ -65,7 +65,7 @@
                                 <form th:action="@{/users/edit/category/delete/{id}(id=${user.userId})}" method="post">
                                     <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
                                     <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
-                                    <button type="submit">削除する</button>
+                                    <button type="submit" id="delete-modal-btn">削除する</button>
                                 </form>
                             </td>
                         </tr>
@@ -171,5 +171,6 @@
     <footer>
         <p class="footer-p" th:text="${user.userName}"></p>
     </footer>
+    <script src="/js/script.js"></script>
 </body>
 </html>

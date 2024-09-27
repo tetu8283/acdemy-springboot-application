@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.springbootapplication.mapper.CategoryMapper">
 
+    <!-- カテゴリの結果マッピング -->
     <resultMap id="CategoryResultMap" type="com.spring.springbootapplication.entity.Category">
         <id column="category_id" property="categoryId" />
         <result column="user_id" property="userId" />
@@ -11,7 +13,8 @@
 
     <!-- カテゴリ追加 -->
     <insert id="insertCategory" parameterType="com.spring.springbootapplication.entity.Category" useGeneratedKeys="true" keyProperty="categoryId">
-        INSERT INTO category (user_id, category_type, category_name) VALUES (#{userId}, #{categoryType}, #{categoryName})
+        INSERT INTO category (user_id, category_type, category_name) 
+        VALUES (#{userId}, #{categoryType}, #{categoryName})
     </insert>
 
     <!-- カテゴリidでカテゴリ検索 -->
@@ -24,18 +27,22 @@
         SELECT * FROM category WHERE category_type = #{categoryType} AND user_id = #{userId}
     </select>
 
-    <!-- カテゴリ名、カテゴリタイプ、ユーザーIDでカテゴリ検索 -->
+    <!-- カテゴリ名、カテゴリタイプ、ユーザーidでカテゴリ検索 -->
     <select id="findByCategoryNameAndTypeAndUserId" parameterType="map" resultMap="CategoryResultMap">
-        SELECT * FROM category WHERE category_name = #{categoryName} AND category_type = #{categoryType} AND user_id = #{userId}
-    </select>
-
-    <!-- ユーザーidでカテゴリを取得 -->
-    <select id="findCategoriesByUserId" parameterType="Integer" resultMap="CategoryResultMap">
-        SELECT * FROM category WHERE user_id = #{userId}
+        SELECT * FROM category 
+        WHERE category_name = #{categoryName} 
+        AND category_type = #{categoryType} 
+        AND user_id = #{userId}
     </select>
 
     <!-- カテゴリ削除 -->
     <delete id="deleteByCategoryIdAndUserId" parameterType="map">
         DELETE FROM category WHERE category_id = #{categoryId} AND user_id = #{userId}
     </delete>
+
+    <!-- ユーザーidでカテゴリを取得 -->
+    <select id="findCategoriesByUserId" parameterType="Integer" resultMap="CategoryResultMap">
+        SELECT * FROM category WHERE user_id = #{userId}
+    </select>
+
 </mapper>

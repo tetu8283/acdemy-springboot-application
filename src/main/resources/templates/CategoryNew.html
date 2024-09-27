@@ -21,8 +21,8 @@
             <input type="hidden" name="learningYear" th:value="${learningYear}" />
             <input type="hidden" name="learningMonth" th:value="${selectedMonth}"/> 
 
-            <div th:if="${errorMessage != null}"></div>
-                <p th:text="${errorMessage}"></p>
+            <div th:if="${errorMessage != null}">
+                <p th:text="${errorMessage}" class="error-message"></p>
             </div>
             
             <div class="input-category">
