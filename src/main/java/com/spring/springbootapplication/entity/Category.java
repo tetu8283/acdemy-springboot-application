@@ -1,11 +1,15 @@
 package com.spring.springbootapplication.entity;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class Category {
 
     private Integer categoryId;
+
+    @NotNull
+    private Integer userId;
 
     @NotBlank
     private Integer categoryType;
@@ -19,11 +23,20 @@ public class Category {
         return categoryId;
     }
 
-    //これでカテゴリがバックエンド、フロント、インフラかを判定
+    
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
     }
 
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    //これでカテゴリがバックエンド、フロント、インフラかを判定
     public Integer getCategoryType() {
         return categoryType;
     }

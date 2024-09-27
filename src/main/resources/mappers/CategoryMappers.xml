@@ -4,28 +4,38 @@
 
     <resultMap id="CategoryResultMap" type="com.spring.springbootapplication.entity.Category">
         <id column="category_id" property="categoryId" />
+        <result column="user_id" property="userId" />
         <result column="category_name" property="categoryName" />
         <result column="category_type" property="categoryType" />
     </resultMap>
 
-    <!-- カテゴリを挿入 -->
-    <insert id="insertCategory" parameterType="com.spring.springbootapplication.entity.Category">
-        INSERT INTO Category(category_type, category_name) VALUES(#{category_type}, #{category_name})
+    <!-- カテゴリ追加 -->
+    <insert id="insertCategory" parameterType="com.spring.springbootapplication.entity.Category" useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO category (user_id, category_type, category_name) VALUES (#{userId}, #{categoryType}, #{categoryName})
     </insert>
 
-    <!-- idでカテゴリを検索 -->
+    <!-- カテゴリidでカテゴリ検索 -->
     <select id="findCategoryById" parameterType="Integer" resultMap="CategoryResultMap">
         SELECT * FROM category WHERE category_id = #{categoryId}
     </select>
 
-    <!-- カテゴリタイプで取得 -->
-    <select id="findCategoriesByType" parameterType="int" resultMap="CategoryResultMap">
-        SELECT * FROM Category WHERE category_type = #{categoryType}
+    <!-- カテゴリタイプとユーザーidでカテゴリ取得 -->
+    <select id="findCategoriesByTypeAndUserId" parameterType="map" resultMap="CategoryResultMap">
+        SELECT * FROM category WHERE category_type = #{categoryType} AND user_id = #{userId}
     </select>
 
-
-    <select id="findAll" resultType="com.spring.springbootapplication.entity.Category">
-        SELECT category_id, category_type, category_name FROM Category
+    <!-- カテゴリ名、カテゴリタイプ、ユーザーIDでカテゴリ検索 -->
+    <select id="findByCategoryNameAndTypeAndUserId" parameterType="map" resultMap="CategoryResultMap">
+        SELECT * FROM category WHERE category_name = #{categoryName} AND category_type = #{categoryType} AND user_id = #{userId}
     </select>
 
+    <!-- ユーザーidでカテゴリを取得 -->
+    <select id="findCategoriesByUserId" parameterType="Integer" resultMap="CategoryResultMap">
+        SELECT * FROM category WHERE user_id = #{userId}
+    </select>
+
+    <!-- カテゴリ削除 -->
+    <delete id="deleteByCategoryIdAndUserId" parameterType="map">
+        DELETE FROM category WHERE category_id = #{categoryId} AND user_id = #{userId}
+    </delete>
 </mapper>

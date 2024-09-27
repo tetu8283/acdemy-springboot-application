@@ -13,13 +13,33 @@
 
     <!-- 学習データを挿入 -->
     <insert id="insertLearningData" parameterType="com.spring.springbootapplication.entity.LearningData">
-        INSERT INTO LearningData(user_id, category_id, learning_year, learning_month, learning_time) 
+        INSERT INTO learning_data(user_id, category_id, learning_year, learning_month, learning_time) 
         VALUES(#{userId}, #{categoryId}, #{learningYear}, #{learningMonth}, #{learningTime})
     </insert>
 
     <!-- すべての学習データを取得 -->
     <select id="findAll" resultMap="LearningDataResultMap">
-        SELECT id, user_id, category_id, learning_year, learning_month, learning_time FROM LearningData
+        SELECT id, user_id, category_id, learning_year, learning_month, learning_time FROM learning_data
     </select>
 
+
+    <select id="findByUserId" parameterType="Integer" resultMap="LearningDataResultMap">
+        SELECT * FROM learning_data WHERE user_id = #{userId}
+    </select>
+
+    <select id="findByUserIdAndCategoryIdAndYearAndMonth" parameterType="map" resultMap="LearningDataResultMap">
+        SELECT * FROM learning_data WHERE user_id = #{userId} AND category_id = #{categoryId} AND learning_year = #{learningYear} AND learning_month = #{learningMonth}
+    </select>
+
+    <!-- learningData更新 -->
+    <update id="updateLearningData" parameterType="com.spring.springbootapplication.entity.LearningData">
+        UPDATE learning_data
+        SET learning_time = #{learningTime}
+        WHERE id = #{id}
+    </update>
+
+    <!-- カテゴリIDとユーザーIDでlearning_dataを削除 -->
+    <delete id="deleteByCategoryIdAndUserId" parameterType="map">
+        DELETE FROM learning_data WHERE category_id = #{categoryId} AND user_id = #{userId}
+    </delete>
 </mapper>
