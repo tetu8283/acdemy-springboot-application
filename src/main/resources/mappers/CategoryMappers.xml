@@ -22,6 +22,11 @@
         SELECT * FROM category WHERE category_id = #{categoryId}
     </select>
 
+    <!-- カテゴリidとユーザidでカテゴリ検索 -->
+    <select id="findByCategoryIdAndUserId" parameterType="Integer" resultMap="CategoryResultMap">
+        SELECT * FROM category WHERE category_id = #{categoryId} AND user_id = #{userId}
+    </select>
+
     <!-- カテゴリタイプとユーザーidでカテゴリ取得 -->
     <select id="findCategoriesByTypeAndUserId" parameterType="map" resultMap="CategoryResultMap">
         SELECT * FROM category WHERE category_type = #{categoryType} AND user_id = #{userId}

@@ -1,0 +1,28 @@
+/* モーダルの背景 */
+.modal {
+    display: none; /* 初期状態は非表示 */
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); /* 半透明の背景 */
+}
+
+/* モーダルコンテンツ */
+.modal-dialog {
+    position: relative;
+    margin: 10% auto; 
+    padding: 20px;
+    width: 80%;
+    max-width: 500px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+/* モーダル表示時のスタイル */
+.modal.show {
+    display: block;
+}

@@ -50,6 +50,10 @@ public class CategoryController {
     @GetMapping("/users/edit/category/{id}")
     public ModelAndView categoryEditForm(@PathVariable Integer id,
                                         @RequestParam(value="selectedMonth", required=false) Integer selectedMonth,
+                                        @RequestParam(value="deleteModal", required=false, defaultValue="false") boolean deleteModal, // 削除モーダル表示のフラグ
+                                        @RequestParam(value="updateModal", required=false, defaultValue="false") boolean updateModal, // 更新モーダル表示のフラグ
+                                        @RequestParam(value="deleteCategory", required=false) String deleteCategory, // 削除したカテゴリ名
+                                        @RequestParam(value="updateCategory", required=false) String updateCategory, // 更新したカテゴリ名
                                         ModelAndView mav) {
         
         Users dbUser = usersMapper.findById(id);
@@ -62,6 +66,7 @@ public class CategoryController {
         int monthBeforeLast = lastMonth - 1 <= 0 ? 12 : lastMonth - 1;
 
         // デフォルトで今月を選択
+        // デフォルトで月をセットしないと、ログイン後に月情報がnullとなっているためデータが何も表示されない
         if (selectedMonth == null) {
             selectedMonth = thisMonth;
         }
@@ -71,7 +76,7 @@ public class CategoryController {
         List<Category> frontEndCategories = categoryMapper.findCategoriesByTypeAndUserId(0, dbUser.getUserId());
         List<Category> infraCategories = categoryMapper.findCategoriesByTypeAndUserId(2, dbUser.getUserId());
 
-        // 各カテゴリリストがnullの場合は空リストを設定(これを書かないとエラーになる)
+        // 各カテゴリリストがnullの場合は空リストを設定(これを書かないとエラーになる。からのリストはダメみたい)
         if (backEndCategories == null) {
             backEndCategories = new ArrayList<>();
         }
@@ -88,7 +93,7 @@ public class CategoryController {
             learningDataList = new ArrayList<>();
         }
 
-        // カテゴリidをキーに、学習時間を値とするマップを作成
+        // カテゴリidをキーに、学習時間を値とするマップを作成(mapを使うと効率的)
         Map<Integer, Integer> categoryIdToLearningTime = new HashMap<>();
         
         // 学習データが存在するカテゴリidを保持するセットを作成
@@ -99,7 +104,7 @@ public class CategoryController {
             if (learningData.getLearningYear().equals(learningYear) && learningData.getLearningMonth().equals(selectedMonth)) {
                 // カテゴリidをキーにして学習時間をマップに格納
                 categoryIdToLearningTime.put(learningData.getCategoryId(), learningData.getLearningTime());
-                // 学習データが存在するカテゴリidをセットに追加（セットは重複を許容しない）
+                // 学習データが存在するカテゴリidをセットに追加（setは重複を許容しない）
                 categoryIdsWithLearningData.add(learningData.getCategoryId());
             }
         }
@@ -117,9 +122,12 @@ public class CategoryController {
             .filter(category -> categoryIdsWithLearningData.contains(category.getCategoryId()))
             .collect(Collectors.toList());
 
+        // バック、フロント、インフラのデータを追加
         mav.addObject("backEndCategories", backEndCategories);
         mav.addObject("frontEndCategories", frontEndCategories);
         mav.addObject("infraCategories", infraCategories);
+
+        // カテゴリidと学習時間のmapを追加
         mav.addObject("categoryIdToLearningTime", categoryIdToLearningTime);
         mav.addObject("selectedMonth", selectedMonth);
 
@@ -129,6 +137,19 @@ public class CategoryController {
         mav.addObject("lastMonth", lastMonth);
         mav.addObject("monthBeforeLast", monthBeforeLast);
         mav.addObject("learningYear", learningYear);
+        mav.addObject("deleteModal", deleteModal); // 削除用モーダルを表示するためのフラグ
+        mav.addObject("updateModal", updateModal); // 更新用モーダルを表示するためのフラグ
+        
+        // 削除されたカテゴリ名をモデルに追加
+        if (deleteCategory != null) {
+            mav.addObject("deletedCategoryName", deleteCategory);
+        }
+
+        // 更新されたカテゴリ名をモデルに追加
+        if (updateCategory != null) {
+            mav.addObject("updatedCategoryName", updateCategory);
+        }
+
         return mav;
     }
 
@@ -146,15 +167,12 @@ public class CategoryController {
                                     @RequestParam("categoryType") int categoryType, 
                                     @RequestParam("learningYear") int learningYear,
                                     @RequestParam("selectedMonth") int selectedMonth,
+                                    @RequestParam(value="createModal", required=false, defaultValue="false") boolean createModal, // カテゴリ追加モーダル表示のフラグ
+                                    @RequestParam(value="createdCategoryName", required=false) String createdCategoryName, // 追加したカテゴリ名
+                                    @RequestParam(value="learningTime", required=false) String learningTime, // 追加した学習時間
                                     ModelAndView mav) {
         
         Users dbUser = usersMapper.findById(id);
-
-        mav.setViewName("CategoryNew");
-        mav.addObject("user", dbUser);
-        mav.addObject("categoryType", categoryType);
-        mav.addObject("learningYear", learningYear);
-        mav.addObject("selectedMonth", selectedMonth);
 
         // カテゴリタイプ名を設定
         String categoryTypeName = switch (categoryType) {
@@ -163,21 +181,34 @@ public class CategoryController {
             case 2 -> "インフラ";
             default -> "カテゴリがありません";
         };
+
+        mav.setViewName("CategoryNew");
+        mav.addObject("user", dbUser);
+        mav.addObject("categoryType", categoryType);
+        mav.addObject("learningYear", learningYear);
+        mav.addObject("selectedMonth", selectedMonth);
         mav.addObject("categoryTypeName", categoryTypeName); 
+        mav.addObject("createModal", createModal); // 登録用モーダルを表示するためのフラグ
+
+        // モーダルに表示する情報をモデルに追加
+        if (createModal) {
+            mav.addObject("createdCategoryName", createdCategoryName);
+            mav.addObject("learningTime", learningTime);
+        }
 
         return mav;
     }
 
     /**
-     * 新規項目作成処理
-     * @param id 
+     * カテゴリ新規作成
+     * @param id
      * @param categoryName
-     * @param categoryType 
-     * @param learningYear 
+     * @param categoryType
+     * @param learningYear
      * @param learningMonth
-     * @param learningTime 
-     * @param mav 
-     * @return 
+     * @param learningTime
+     * @param mav
+     * @return
      */
     @PostMapping("/users/new/category/{id}")
     public ModelAndView createCategory(@PathVariable Integer id,
@@ -185,7 +216,6 @@ public class CategoryController {
                                         @RequestParam("categoryType") String categoryType,
                                         @RequestParam("learningYear") String learningYear,
                                         @RequestParam("learningMonth") String learningMonth,
-                                        // 項目のみ作成する際に、学習時間をデフォルトで0にする
                                         @RequestParam(value = "learningTime", defaultValue = "0") String learningTime,
                                         ModelAndView mav) {
         Users dbUser = usersMapper.findById(id);
@@ -193,14 +223,6 @@ public class CategoryController {
 
         // カテゴリの存在チェック（カテゴリ名、タイプ、ユーザーidで検索）
         Category existingCategory = categoryMapper.findByCategoryNameAndTypeAndUserId(categoryName, categoryTypeInt, id);
-
-        // カテゴリタイプ名を設定
-        String categoryTypeName = switch (categoryTypeInt) {
-            case 0 -> "フロントエンド";
-            case 1 -> "バックエンド";
-            case 2 -> "インフラ";
-            default -> "カテゴリがありません";
-        };
 
         if (existingCategory != null) {
             // 既存のカテゴリがある場合、指定された年と月に学習データが存在するか確認
@@ -216,6 +238,13 @@ public class CategoryController {
                 mav.addObject("learningYear", learningYear);
                 mav.addObject("learningMonth", learningMonth);
                 mav.addObject("selectedMonth", learningMonth);
+                // カテゴリタイプ名を設定
+                String categoryTypeName = switch (categoryTypeInt) {
+                    case 0 -> "フロントエンド";
+                    case 1 -> "バックエンド";
+                    case 2 -> "インフラ";
+                    default -> "カテゴリがありません";
+                };
                 mav.addObject("categoryTypeName", categoryTypeName);
                 return mav;
             } else { 
@@ -230,8 +259,15 @@ public class CategoryController {
 
                 learningDataMapper.insertLearningData(newLearningData); // 学習データ追加
 
-                // CategoryEditページにリダイレクト
-                return new ModelAndView("redirect:/users/edit/category/" + id + "?selectedMonth=" + learningMonth);
+                // CategoryNewにリダイレクトして必要な情報とフラグを渡す
+                return new ModelAndView("redirect:/users/new/category/" + id + 
+                    "?categoryType=" + categoryType + 
+                    "&learningYear=" + learningYear + 
+                    "&selectedMonth=" + learningMonth + 
+                    "&createModal=true" + 
+                    "&createdCategoryName=" + categoryName + 
+                    "&learningTime=" + learningTime
+                );
             }
         }
 
@@ -256,10 +292,47 @@ public class CategoryController {
 
         learningDataMapper.insertLearningData(learningData); // 学習データを追加
 
-        // CategoryEditページにリダイレクト
-        return new ModelAndView("redirect:/users/edit/category/" + id + "?selectedMonth=" + learningMonth);
+        // CategoryNewにリダイレクトして必要な情報とフラグを渡す
+        return new ModelAndView("redirect:/users/new/category/" + id + 
+            "?categoryType=" + categoryType + 
+            "&learningYear=" + learningYear + 
+            "&selectedMonth=" + learningMonth + 
+            "&createModal=true" + 
+            "&createdCategoryName=" + categoryName + 
+            "&learningTime=" + learningTime
+        );
     }
 
+     /**
+     * カテゴリ削除
+     * @param id
+     * @param categoryId
+     * @param selectedMonth
+     * @param mav 
+     * @return 
+     */
+    @PostMapping("/users/edit/category/delete/{id}")
+    public ModelAndView deleteCategory(@PathVariable Integer id,
+                                        @RequestParam("categoryId") Integer categoryId,
+                                        @RequestParam("selectedMonth") Integer selectedMonth,
+                                        ModelAndView mav) {
+
+        // カテゴリidとユーザidでカテゴリを取得
+        Category category = categoryMapper.findByCategoryIdAndUserId(categoryId, id);
+        String deleteCategory = category.getCategoryName();
+
+        // 学習データをカテゴリidとユーザーidで削除
+        learningDataMapper.deleteByCategoryIdAndUserId(categoryId, id);
+
+        // カテゴリをカテゴリidとユーザーidで削除
+        categoryMapper.deleteByCategoryIdAndUserId(categoryId, id);
+
+        // CategoryEditページにリダイレクト(削除モーダル表示フラグと削除したカテゴリ名を付加)
+        return new ModelAndView("redirect:/users/edit/category/" + id +
+                                "?selectedMonth=" + selectedMonth +
+                                "&deleteCategory=" + deleteCategory +
+                                "&deleteModal=true");
+    }
 
     /**
      * 学習データ更新
@@ -277,7 +350,11 @@ public class CategoryController {
                                             @RequestParam("selectedMonth") Integer selectedMonth,
                                             ModelAndView mav) {
         Calendar calendar = Calendar.getInstance();
+        Category category = categoryMapper.findByCategoryIdAndUserId(categoryId, id);
         int learningYear = calendar.get(Calendar.YEAR);
+
+        // カテゴリidとユーザidで検索してカテゴリ名をgetする
+        String updateCategory = category.getCategoryName();
 
         // 既存の学習データを取得（ユーザーid、カテゴリid、年、月で検索）
         LearningData existingLearningData = learningDataMapper.findByUserIdAndCategoryIdAndYearAndMonth(id, categoryId, learningYear, selectedMonth);
@@ -287,31 +364,22 @@ public class CategoryController {
         learningDataMapper.updateLearningData(existingLearningData); // 学習データを更新
         
 
-        // CategoryEditページにリダイレクト
-        return new ModelAndView("redirect:/users/edit/category/" + id + "?selectedMonth=" + selectedMonth);
+        // CategoryEditページにリダイレクト(更新用フラグと更新したカテゴリ名を付加)
+        return new ModelAndView("redirect:/users/edit/category/" + id + "?selectedMonth=" + selectedMonth + "&updateCategory=" + updateCategory + "&updateModal=true");
     }
 
     /**
-     * カテゴリ削除
-     * @param id
-     * @param categoryId
+     * モーダル内の「カテゴリ一覧」ボタンのリダイレクト処理
+     * @param userId
      * @param selectedMonth
      * @param mav 
      * @return 
      */
-    @PostMapping("/users/edit/category/delete/{id}")
-    public ModelAndView deleteCategory(@PathVariable Integer id,
-                                        @RequestParam("categoryId") Integer categoryId,
-                                        @RequestParam("selectedMonth") Integer selectedMonth,
-                                        ModelAndView mav) {
-
-        // 学習データをカテゴリidとユーザーidで削除
-        learningDataMapper.deleteByCategoryIdAndUserId(categoryId, id); // 学習データ削除
-
-        // カテゴリをカテゴリidとユーザーidで削除
-        categoryMapper.deleteByCategoryIdAndUserId(categoryId, id); // カテゴリ削除
-
-        // CategoryEditページにリダイレクト
-        return new ModelAndView("redirect:/users/edit/category/" + id + "?selectedMonth=" + selectedMonth);
+    @GetMapping("/users/edit/category/redirect")
+    public ModelAndView redirectToCategoryEdit(@RequestParam("userId") Integer userId,
+                                                @RequestParam("selectedMonth") Integer selectedMonth,
+                                                ModelAndView mav) {
+        
+        return new ModelAndView("redirect:/users/edit/category/" + userId + "?selectedMonth=" + selectedMonth);
     }
 }

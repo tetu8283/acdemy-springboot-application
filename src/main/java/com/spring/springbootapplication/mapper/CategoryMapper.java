@@ -20,6 +20,9 @@ public interface CategoryMapper {
      */
     Category findCategoryById(Integer categoryId); 
 
+
+    Category findByCategoryIdAndUserId(Integer categoryId, Integer userId); 
+
     /**
      * カテゴリタイプとユーザーidでカテゴリを取得
      * @param categoryType
