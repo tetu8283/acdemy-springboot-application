@@ -1,6 +1,7 @@
 package com.spring.springbootapplication.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -44,6 +45,18 @@ public interface LearningDataMapper {
      * @param categoryId
      * @param userId
      */
-    void deleteByCategoryIdAndUserId(@Param("categoryId") Integer categoryId, 
-                                    @Param("userId") Integer userId);
+    void deleteByCategoryIdAndUserId(@Param("categoryId") Integer categoryId, @Param("userId") Integer userId);
+
+    /**
+     * カテゴリタイプごとの学習時間の合計を取得します。
+     *
+     * @param userId        ユーザーID
+     * @param learningYear  学習年
+     * @param learningMonth 学習月
+     * @return カテゴリタイプごとの学習時間の合計リスト（Mapのリスト）
+     */
+    List<Map<String, Object>> getTotalLearningTimeByCategoryType(
+        @Param("userId") Integer userId,
+        @Param("learningYear") Integer learningYear,
+        @Param("learningMonth") Integer learningMonth);
 }

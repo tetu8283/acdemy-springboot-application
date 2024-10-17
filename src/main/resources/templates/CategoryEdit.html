@@ -5,171 +5,194 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/category.css">
     <link rel="stylesheet" href="/css/modal.css">
+    <!-- ネットにあったのコピペした -->
+    <style>
+        /* 数値の入力欄にスピナーを常時表示する */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+        opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <header class="signin-header">
-        <h1 class="header-h1">My Portfolio</h1>
+        <h1 class="header-h1"><a class="header-a" th:href="@{/users/top}">My Portfolio</a></h1>
         <!-- ログアウトボタン -->
         <form name="logout" class="header-form" th:action="@{/users/logout}" method="post">
             <button class="header-btn" type="submit">ログアウト</button>
         </form>
     </header>
-    <main>
+    <main class="category-edit-main">
         <div class="wrapper">
             <!-- プルダウン作成 -->
             <form class="select-month" th:action="@{/users/edit/category/{id}(id=${user.userId})}" method="get">
                 <select name="selectedMonth" onchange="this.form.submit()">
+                    <!-- <option th:value="${thisMonth}" th:text="${thisMonth} + '月'" th:selected="${selectedMonth == thisMonth}"></option> -->
                     <option th:value="${thisMonth}" th:text="${thisMonth} + '月'" th:selected="${selectedMonth == thisMonth}"></option>
                     <option th:value="${lastMonth}" th:text="${lastMonth} + '月'" th:selected="${selectedMonth == lastMonth}"></option>
                     <option th:value="${monthBeforeLast}" th:text="${monthBeforeLast} + '月'" th:selected="${selectedMonth == monthBeforeLast}"></option>
                 </select>
             </form>
             
-            <!-- バックエンドカテゴリ -->
-            <div class="category-block">
-                <div class="category-title">
-                    <p>バックエンド</p>
-                </div>
-                <form name="backend" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" method="get">
-                    <input type="hidden" name="categoryType" value="1"/> 
-                    <input type="hidden" name="learningYear" th:value="${learningYear}"/> 
-                    <input type="hidden" name="selectedMonth" th:value="${selectedMonth}"/>
-                    <button class="add-btn" type="submit">項目を追加する</button>
-                </form>
+            <div class="category-blocks">
+                <!-- バックエンドカテゴリ -->
+                <div class="category-block">
+                    <div class="category-header">
+                        <div class="category-title">
+                            <p>バックエンド</p>
+                        </div>
+                        <form name="backend" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" method="get">
+                            <input type="hidden" name="categoryType" value="0"/> 
+                            <input type="hidden" name="learningYear" th:value="${learningYear}"/> 
+                            <input type="hidden" name="selectedMonth" th:value="${selectedMonth}"/>
+                            <button class="add-btn" type="submit">項目を追加する</button>
+                        </form>
+                    </div>
 
-                <table class="categorys">
-                    <thead>
-                        <tr>
-                            <th>項目名</th>
-                            <th>学習時間</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="category : ${backEndCategories}">
-                            <td th:text="${category.categoryName}"></td> <!-- カテゴリ名を取得して表示 -->
-                            <td>
-                                <!-- formのidを設定することで、formタグ内にボタンがなくてもボタンをクリックしたら処理を行えるようにしている -->
-                                <!-- th:id="'backend-form-' + ${category.categoryId}"でidを一意にしている(idを一意にしないと2つ目以降が更新できない) -->
-                                <form th:action="@{/users/edit/category/updateTime/{id}(id=${user.userId})}" th:id="'backend-form-' + ${category.categoryId}" method="post">
-                                    <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
-                                    <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
+                    <table class="categorys">
+                        <thead>
+                            <tr>
+                                <th>項目名</th>
+                                <th>学習時間</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="category : ${backEndCategories}">
+                                <td th:text="${category.categoryName}"></td> <!-- カテゴリ名を取得して表示 -->
+                                <td>
+                                    <!-- formのidを設定することで、formタグ内にボタンがなくてもボタンをクリックしたら処理を行えるようにしている -->
+                                    <!-- th:id="'backend-form-' + ${category.categoryId}"でidを一意にしている(idを一意にしないと2つ目以降が更新できない) -->
+                                    <form th:action="@{/users/edit/category/updateTime/{id}(id=${user.userId})}" th:id="'backend-form-' + ${category.categoryId}" method="post">
+                                        <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                                        <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
 
-                                    <!-- 入力欄に既存の値を表示する。(値がない場合は0を表示) -->
-                                    <input type="number" name="learningTime" min="0" required
-                                        th:value="${categoryIdToLearningTime[category.categoryId] != null ? categoryIdToLearningTime[category.categoryId] : 0}" />
-                                </form>
-                            </td>
-                            <td>
-                                <!-- form属性で上記のformと紐付けている -->
-                                <!-- th:attrを使用するとタグの属性を動的に変更できるみたい -->
-                                <button type="submit" th:attr="form='backend-form-' + ${category.categoryId}">学習時間を保存する</button>
-                            </td>
-                            <td>
-                                <form th:action="@{/users/edit/category/delete/{id}(id=${user.userId})}" method="post">
-                                    <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
-                                    <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
-                                    
-                                    <button class="delete-btn" type="submit" data-category-id="${category.categoryId}" 
-                                        data-selected-month="${selectedMonth}">削除する</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- フロントエンドカテゴリ -->
-            <div class="category-block">
-                <div class="category-title">
-                    <p>フロントエンド</p>
-                </div>
-                
-                <form name="frontend" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" method="get">
-                    <input type="hidden" name="categoryType" value="0"/> 
-                    <input type="hidden" name="learningYear" th:value="${learningYear}"/> 
-                    <input type="hidden" name="selectedMonth" th:value="${selectedMonth}"/>
-                    <button class="add-btn" type="submit">項目を追加する</button>
-                </form>
-
-                <table class="categorys">
-                    <thead>
-                        <tr>
-                            <th>項目名</th>
-                            <th>学習時間</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="category : ${frontEndCategories}">
-                            <td th:text="${category.categoryName}"></td>
-                            <td>
-                                <form th:action="@{/users/edit/category/updateTime/{id}(id=${user.userId})}" th:id="'frontend-form-' + ${category.categoryId}" method="post">
-                                    <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
-                                    <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
-                                    
-                                    <input type="number" name="learningTime" min="0" required
-                                        th:value="${categoryIdToLearningTime[category.categoryId] != null ? categoryIdToLearningTime[category.categoryId] : 0}" />
-                                </form>
-                            </td>
-                            <td>
-                                <button type="submit" th:attr="form='frontend-form-' + ${category.categoryId}">学習時間を保存する</button>
-                            </td>
-                            <td>
-                                <form th:action="@{/users/edit/category/delete/{id}(id=${user.userId})}" method="post">
-                                    <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
-                                    <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
-                                    <button class="delete-btn" type="submit">削除する</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- インフラカテゴリ -->
-            <div class="category-block">
-                <div class="category-title">
-                    <p>インフラ</p>
+                                        <!-- 入力欄に既存の値を表示する。(値がない場合は0を表示) -->
+                                        <input type="number" name="learningTime" min="0" required
+                                            th:value="${categoryIdToLearningTime[category.categoryId] != null ? categoryIdToLearningTime[category.categoryId] : 0}" />
+                                    </form>
+                                </td>
+                                <td>
+                                    <!-- form属性で上記のformと紐付けている -->
+                                    <!-- th:attrを使用するとタグの属性を動的に変更できるみたい -->
+                                    <button class="update-btn" type="submit" th:attr="form='backend-form-' + ${category.categoryId}">学習時間を保存する</button>
+                                </td>
+                                <td>
+                                    <form th:action="@{/users/edit/category/delete/{id}(id=${user.userId})}" method="post">
+                                        <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                                        <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
+                                        
+                                        <button class="delete-btn" type="submit" data-category-id="${category.categoryId}" 
+                                            data-selected-month="${selectedMonth}">削除する</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <form name="infrastructure" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" method="get">
-                    <input type="hidden" name="categoryType" value="2"/> 
-                    <input type="hidden" name="learningYear" th:value="${learningYear}"/> 
-                    <input type="hidden" name="selectedMonth" th:value="${selectedMonth}"/>
-                    <button class="add-btn" type="submit">項目を追加する</button>
-                </form>
-                
-                <table class="categorys">
-                    <thead>
-                        <tr>
-                            <th>項目名</th>
-                            <th>学習時間</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="category : ${infraCategories}">
-                            <td th:text="${category.categoryName}"></td>
-                            <td>
-                                <form th:action="@{/users/edit/category/updateTime/{id}(id=${user.userId})}" th:id="'infra-form-' + ${category.categoryId}" method="post">
-                                    <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
-                                    <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
-                                    
-                                    <input type="number" name="learningTime" min="0" required
-                                        th:value="${categoryIdToLearningTime[category.categoryId] != null ? categoryIdToLearningTime[category.categoryId] : 0}" />
-                                </form>
-                            </td>
-                            <td>
-                                <button type="submit" th:attr="form='infra-form-' + ${category.categoryId}">学習時間を保存する</button>
-                            </td>
-                            <td>
-                                <form th:action="@{/users/edit/category/delete/{id}(id=${user.userId})}" method="post">
-                                    <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
-                                    <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
-                                    <button class="delete-btn" type="submit">削除する</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- フロントエンドカテゴリ -->
+                <div class="category-block">
+                    <div class="category-header">
+                        <div class="category-title">
+                            <p>フロントエンド</p>
+                        </div>
+                        
+                        <form name="frontend" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" method="get">
+                            <input type="hidden" name="categoryType" value="1"/> 
+                            <input type="hidden" name="learningYear" th:value="${learningYear}"/> 
+                            <input type="hidden" name="selectedMonth" th:value="${selectedMonth}"/>
+                            <button class="add-btn" type="submit">項目を追加する</button>
+                        </form>
+                    </div>
+
+                    <table class="categorys">
+                        <thead>
+                            <tr>
+                                <th>項目名</th>
+                                <th>学習時間</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="category : ${frontEndCategories}">
+                                <td th:text="${category.categoryName}"></td>
+                                <td>
+                                    <form th:action="@{/users/edit/category/updateTime/{id}(id=${user.userId})}" th:id="'frontend-form-' + ${category.categoryId}" method="post">
+                                        <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                                        <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
+                                        
+                                        <input type="number" name="learningTime" min="0" required
+                                            th:value="${categoryIdToLearningTime[category.categoryId] != null ? categoryIdToLearningTime[category.categoryId] : 0}" />
+                                    </form>
+                                </td>
+                                <td>
+                                    <button class="update-btn" type="submit" th:attr="form='frontend-form-' + ${category.categoryId}">学習時間を保存する</button>
+                                </td>
+                                <td>
+                                    <form th:action="@{/users/edit/category/delete/{id}(id=${user.userId})}" method="post">
+                                        <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                                        <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
+                                        <button class="delete-btn" type="submit">削除する</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- インフラカテゴリ -->
+                <div class="category-block">
+                    <div class="category-header">
+                        <div class="category-title">
+                            <p>インフラ</p>
+                        </div>
+    
+                        <form name="infrastructure" class="add-form" th:action="@{/users/new/category/{id}(id=${user.userId})}" method="get">
+                            <input type="hidden" name="categoryType" value="2"/> 
+                            <input type="hidden" name="learningYear" th:value="${learningYear}"/> 
+                            <input type="hidden" name="selectedMonth" th:value="${selectedMonth}"/>
+                            <button class="add-btn" type="submit">項目を追加する</button>
+                        </form>
+                    </div>
+                    
+                    <table class="categorys">
+                        <thead>
+                            <tr>
+                                <th>項目名</th>
+                                <th>学習時間</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="category : ${infraCategories}">
+                                <td th:text="${category.categoryName}"></td>
+                                <td>
+                                    <form th:action="@{/users/edit/category/updateTime/{id}(id=${user.userId})}" th:id="'infra-form-' + ${category.categoryId}" method="post">
+                                        <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                                        <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
+                                        
+                                        <input type="number" name="learningTime" min="0" required
+                                            th:value="${categoryIdToLearningTime[category.categoryId] != null ? categoryIdToLearningTime[category.categoryId] : 0}" />
+                                    </form>
+                                </td>
+                                <td>
+                                    <button class="update-btn" type="submit" th:attr="form='infra-form-' + ${category.categoryId}">学習時間を保存する</button>
+                                </td>
+                                <td>
+                                    <form th:action="@{/users/edit/category/delete/{id}(id=${user.userId})}" method="post">
+                                        <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                                        <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
+                                        <button class="delete-btn" type="submit">削除する</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -190,10 +213,10 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <!-- 削除したカテゴリ名を表示 -->
-                    <p th:text="${deletedCategoryName} + 'を削除しました！'"></p>
+                    <p class="modal-p" th:text="${deletedCategoryName} + 'を削除しました！'"></p>
 
                     <!-- カテゴリ一覧ボタン -->
-                    <form th:action="@{/users/edit/category/redirect}" method="get"> 
+                    <form class="modal-form" th:action="@{/users/edit/category/redirect}" method="get"> 
                         <input type="hidden" name="userId" th:value="${user.userId}" /> 
                         <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
                         <button type="submit" class="category-btn">カテゴリ一覧</button> 
@@ -209,10 +232,10 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <!-- 更新したカテゴリ名を表示 -->
-                    <p th:text="${updatedCategoryName} + 'の学習時間を更新しました！'"></p>
+                    <p class="modal-p" th:text="${updatedCategoryName} + 'の学習時間を更新しました！'"></p>
 
                     <!-- カテゴリ一覧ボタン -->
-                    <form th:action="@{/users/edit/category/redirect}" method="get"> 
+                    <form class="modal-form" th:action="@{/users/edit/category/redirect}" method="get"> 
                         <input type="hidden" name="userId" th:value="${user.userId}" /> 
                         <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
                         <button type="submit" class="category-btn">カテゴリ一覧</button> 

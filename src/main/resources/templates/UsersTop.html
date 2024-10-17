@@ -7,7 +7,7 @@
 </head>
 <body>
     <header class="top-header">
-        <h1 class="header-h1">My Portfolio</h1>
+        <h1 class="header-h1"><a class="header-a" th:href="@{/users/top}">My Portfolio</a></h1>
         <!-- ログアウトボタン -->
         <form name="logout" class="header-form" th:action="@{/users/logout}" method="post">
             <button class="header-btn" type="submit">ログアウト</button>
@@ -33,16 +33,34 @@
                 </form>
             </div>
         </div>
-        <div class="categorys">
+        <div class="category">
             <h2 class="category-h2">学習チャート</h2>
             <form name="category-edit" class="category-edit-form" th:action="@{/users/edit/category/{id}(id=${user.userId})}" th:object="${user}" method="get"> 
                 <button class="category-edit-btn" type="submit">編集する</button>
             </form>
+        </div>
+        <div class="chart">
+            <!-- チャートはここに表示 -->
+            <canvas id="learningChart" width="1000" height="500"></canvas>
         </div>
     </main>
     <footer>
         
         <p class="footer-p" th:text="${user.userName}"></p> 
     </footer>
+    <!-- Chart.jsのライブラリを読み込む -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- コントローラーからのデータをJavaScript変数に渡す -->
+    <script th:inline="javascript">
+        window.monthsJson = /*[[${monthsJson}]]*/ '[]';
+        window.yearsJson = /*[[${yearsJson}]]*/ '[]';
+        
+        window.thisMonthLearningTimeJson = /*[[${thisMonthLearningTimeJson}]]*/ '[]';
+        window.lastMonthLearningTimeJson = /*[[${lastMonthLearningTimeJson}]]*/ '[]';
+        window.monthBeforeLastLearningTimeJson = /*[[${monthBeforeLastLearningTimeJson}]]*/ '[]';
+    </script>
+    <!-- 外部JavaScriptファイルを読み込む -->
+    <script src="/js/learningChart.js"></script>
 </body>
 </html>

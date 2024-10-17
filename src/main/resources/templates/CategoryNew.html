@@ -5,10 +5,18 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/category.css">
     <link rel="stylesheet" href="/css/modal.css">
+    <!-- ネットにあったのコピペした -->
+    <style>
+        /* 数値の入力欄にスピナーを常時表示する */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+        opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <header class="signin-header">
-        <h1 class="header-h1">My Portfolio</h1>
+        <h1 class="header-h1"><a class="header-a" th:href="@{/users/top}">My Portfolio</a></h1>
         <!-- ログアウトボタン -->
         <form name="logout" class="header-form" th:action="@{/users/logout}" method="post">
             <button class="header-btn" type="submit">ログアウト</button>
@@ -40,11 +48,11 @@
 
         <!-- 登録モーダル表示用のフラグを追加 --> 
         <div th:if="${createModal}" id="createModalFlag" 
-             data-create-modal="true"
-             data-category-type-name="${categoryTypeName}"
-             data-created-category-name="${createdCategoryName}"
-             data-learning-time="${learningTime}"
-             style="display:none;"></div>
+            data-create-modal="true"
+            data-category-type-name="${categoryTypeName}"
+            data-created-category-name="${createdCategoryName}"
+            data-learning-time="${learningTime}"
+            style="display:none;"></div>
     </main>
     <footer>
         <p class="footer-p" th:text="${user.userName}"></p>
@@ -56,10 +64,10 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <!-- 登録したカテゴリ名を表示 -->
-                    <p th:utext="${categoryTypeName} + 'に' + ${createdCategoryName} + 'を<br>' + ${learningTime} + '分で追加しました！'"></p>
+                    <p class="modal-p" th:utext="${categoryTypeName} + 'に' + ${createdCategoryName} + 'を<br>' + ${learningTime} + '分で追加しました！'"></p>
 
                     <!-- カテゴリ一覧ボタン -->
-                    <form th:action="@{/users/edit/category/redirect}" method="get"> 
+                    <form class="modal-form" th:action="@{/users/edit/category/redirect}" method="get"> 
                         <input type="hidden" name="userId" th:value="${user.userId}" /> 
                         <input type="hidden" name="selectedMonth" th:value="${selectedMonth}" />
                         <button type="submit" class="category-btn">カテゴリ一覧</button> 

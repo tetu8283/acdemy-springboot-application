@@ -5,8 +5,11 @@ package com.spring.springbootapplication.controller;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import  java.util.ArrayList;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -26,7 +29,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.spring.springbootapplication.entity.Users;
+import com.spring.springbootapplication.mapper.LearningDataMapper;
 import com.spring.springbootapplication.mapper.UsersMapper;
 
 import jakarta.servlet.ServletException;
@@ -47,7 +52,11 @@ public class UsersController {
 
     // データベースにアクセスするためのユーザーマッパー
     @Autowired
+
     private UsersMapper usersMapper;
+    
+    @Autowired
+    private LearningDataMapper learningDataMapper;
 
     @Autowired
     private Validator validator; // SpringのValidatorをインジェクション
@@ -152,7 +161,6 @@ public class UsersController {
      * @param request HTTPリクエストオブジェクト
      * @return 
      */
-
     @GetMapping("/users/top")
     public ModelAndView top(HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("UsersTop");
@@ -172,9 +180,72 @@ public class UsersController {
         mav.addObject("user", dbUser);
         mav.addObject("profileImage", profileImage);
 
+        // ここからチャート用のプログラム
+        Calendar calendar = Calendar.getInstance();
+
+        int learningYear = calendar.get(Calendar.YEAR);  // 現在の年を取得
+        int thisMonth = calendar.get(Calendar.MONTH) + 1; // 今月の月情報
+
+        List<Integer> months = new ArrayList<>(); // 3ヶ月分の月情報を格納する配列
+        List<Integer> years = new ArrayList<>(); // 3ヶ月分の年情報を格納する配列
+
+        // 今月
+        months.add(thisMonth); // 今月の月情報を格納
+        years.add(learningYear); // 今月の年情報を格納
+
+        // 先月
+        int lastMonth = thisMonth - 1; // 先月の月情報
+        int lastMonthYear = learningYear; // 先月の年情報
+        // thisMonth - 1が0になる場合、つまり今月が1月で先月が去年の12月になる
+        if (lastMonth <= 0) { 
+            lastMonth += 12; // 12月であるため、12を足す
+            lastMonthYear -= 1; // 去年の12月のため今年から1を引く
+        }
+        months.add(lastMonth);
+        years.add(lastMonthYear);
+
+        // 先々月
+        int monthBeforeLast = thisMonth - 2;
+        int monthBeforeLastYear = learningYear; // 先々月の年情報
+        // 今月が2月である際の処理
+        if (monthBeforeLast <= 0) {
+            monthBeforeLast += 12; // 2月の先々月は、去年の12月
+            monthBeforeLastYear -= 1;
+        }
+        months.add(monthBeforeLast);
+        years.add(monthBeforeLastYear);
+        
+
+        // カテゴリタイプごとの学習時間の合計のmapをlistに格納
+        // listを使用することで、複数のmapを保持できる
+        List<Map<String, Object>> thisMonthLearningTimeList = learningDataMapper.getTotalLearningTimeByCategoryType(
+                dbUser.getUserId(), years.get(0), months.get(0));
+        // 先月
+        List<Map<String, Object>> lastMonthLearningTimeList = learningDataMapper.getTotalLearningTimeByCategoryType(
+                dbUser.getUserId(), years.get(1), months.get(1));
+        // 先々月
+        List<Map<String, Object>> monthBeforeLastLearningTimeList = learningDataMapper.getTotalLearningTimeByCategoryType(
+                dbUser.getUserId(), years.get(2), months.get(2));
+
+        // 3ヶ月分の月と年の情報とカテゴリ学習時間のMapをJson形式の文字列に変換
+        Gson gson = new Gson();
+        String monthsJson = gson.toJson(months);
+        String yearsJson = gson.toJson(years);
+
+        String thisMonthLearningTimeJson = gson.toJson(thisMonthLearningTimeList);
+        String lastMonthLearningTimeJson = gson.toJson(lastMonthLearningTimeList);
+        String monthBeforeLastLearningTimeJson = gson.toJson(monthBeforeLastLearningTimeList);
+
+        // モデルに追加
+        mav.addObject("monthsJson", monthsJson);
+        mav.addObject("yearsJson", yearsJson);
+
+        mav.addObject("thisMonthLearningTimeJson", thisMonthLearningTimeJson);
+        mav.addObject("lastMonthLearningTimeJson", lastMonthLearningTimeJson);
+        mav.addObject("monthBeforeLastLearningTimeJson", monthBeforeLastLearningTimeJson);
+
         return mav;
     }
-
 
     /**
       * ユーザ編集ページへ遷移
@@ -247,19 +318,6 @@ public class UsersController {
         return new ModelAndView("redirect:/users/top");
     }
 
-    // 画像をエンコードして文字列として返すメソッド
-    private String encodeImage(String path) {
-        try {
-            byte[] imageBytes = Files.readAllBytes(Paths.get(path));
-            return "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
-        } catch (IOException e) {
-            return "";
-        }
-    }
-
-    // これはDBの中身を確認するために作成。
-    // SecurituConfigでログインしなくてもDBの中身が確認できるようにアクセス許可を与えている
-
     /**
      * ユーザー一覧を表示する
      * @return ModelAndView ユーザー一覧ページ
@@ -272,5 +330,15 @@ public class UsersController {
         mav.addObject("userList", userList); // ユーザーリストをモデルに追加
 
         return mav;
+    }
+
+    // 画像をエンコードして文字列として返すメソッド
+    private String encodeImage(String path) {
+        try {
+            byte[] imageBytes = Files.readAllBytes(Paths.get(path));
+            return "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+        } catch (IOException e) {
+            return "";
+        }
     }
 }

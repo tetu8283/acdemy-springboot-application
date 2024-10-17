@@ -47,4 +47,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         AND user_id = #{userId}
     </delete>
 
+    <!-- カテゴリタイプごとの学習時間の合計を取得 -->
+    <select id="getTotalLearningTimeByCategoryType" parameterType="map" resultType="map">
+        SELECT c.category_type, SUM(ld.learning_time) AS total_learning_time
+        FROM learning_data ld
+        JOIN category c ON ld.category_id = c.category_id
+        WHERE ld.user_id = #{userId}
+            AND ld.learning_year = #{learningYear}
+            AND ld.learning_month = #{learningMonth}
+        GROUP BY c.category_type
+        ORDER BY c.category_type;
+    </select>
+
 </mapper>

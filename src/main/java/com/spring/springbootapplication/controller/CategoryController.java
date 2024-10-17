@@ -72,8 +72,8 @@ public class CategoryController {
         }
 
         // カテゴリタイプごとにカテゴリリストを取得
-        List<Category> backEndCategories = categoryMapper.findCategoriesByTypeAndUserId(1, dbUser.getUserId());
-        List<Category> frontEndCategories = categoryMapper.findCategoriesByTypeAndUserId(0, dbUser.getUserId());
+        List<Category> backEndCategories = categoryMapper.findCategoriesByTypeAndUserId(0, dbUser.getUserId());
+        List<Category> frontEndCategories = categoryMapper.findCategoriesByTypeAndUserId(1, dbUser.getUserId());
         List<Category> infraCategories = categoryMapper.findCategoriesByTypeAndUserId(2, dbUser.getUserId());
 
         // 各カテゴリリストがnullの場合は空リストを設定(これを書かないとエラーになる。からのリストはダメみたい)
@@ -156,7 +156,7 @@ public class CategoryController {
     /**
      * 項目新規作成ページ表示
      * @param id 
-     * @param categoryType カテゴリタイプ（0: フロントエンド, 1: バックエンド, 2: インフラ）
+     * @param categoryType カテゴリタイプ（0: バックエンド, 1: フロントエンド, 2: インフラ）
      * @param learningYear
      * @param selectedMonth
      * @param mav 
@@ -176,8 +176,8 @@ public class CategoryController {
 
         // カテゴリタイプ名を設定
         String categoryTypeName = switch (categoryType) {
-            case 0 -> "フロントエンド";
-            case 1 -> "バックエンド";
+            case 0 -> "バックエンド";
+            case 1 -> "フロントエンド";
             case 2 -> "インフラ";
             default -> "カテゴリがありません";
         };
@@ -240,8 +240,8 @@ public class CategoryController {
                 mav.addObject("selectedMonth", learningMonth);
                 // カテゴリタイプ名を設定
                 String categoryTypeName = switch (categoryTypeInt) {
-                    case 0 -> "フロントエンド";
-                    case 1 -> "バックエンド";
+                    case 0 -> "バックエンド";
+                    case 1 -> "フロントエンド";
                     case 2 -> "インフラ";
                     default -> "カテゴリがありません";
                 };

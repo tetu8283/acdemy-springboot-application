@@ -1,3 +1,4 @@
+
 * {
     font-family: "Roboto";
     list-style: none;
@@ -30,11 +31,20 @@ header {
     background-color: #1B5678; /* 背景色を指定 */
 }
 
-.header-h1 {
+/* .header-h1 {
     font-size: 36px;
     color: white;
     font-weight: 700;
     line-height: 42.19px;
+} */
+
+.header-a {
+    text-decoration: none;
+    font-size: 36px;
+    color: white;
+    font-weight: 700;
+    line-height: 42.19px;
+    cursor: pointer;
 }
 
 .header-form {
@@ -51,7 +61,7 @@ header {
 }
 
 main {
-    padding: 40px;
+    padding: 35px;
     /* この要素が空いたスペースを埋めるようにしてい */
     flex-grow: 1; 
     margin: 0 auto;
@@ -256,6 +266,40 @@ footer {
     margin-top: 80px;
 }
 
+.category {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.category-h2 {
+    margin: 0 auto;
+    width: 230px;
+    border-bottom: solid 2px #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 50px;
+}
+
+.chart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+/* .category-edit-form {
+    
+} */
+
+.category-edit-btn {
+    padding: 10px 30px;
+    font-size: 16px;
+    background-color: #1B5678;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
 
 
 /* ここからeditページのcss  */

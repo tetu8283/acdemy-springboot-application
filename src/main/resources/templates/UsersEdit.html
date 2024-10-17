@@ -6,7 +6,7 @@
 </head>
 <body>
     <header class="top-header">
-        <h1 class="header-h1">My Portfolio</h1>
+        <h1 class="header-h1"><a class="header-a" th:href="@{/users/top}">My Portfolio</a></h1>
         <!-- ログアウトボタン -->
         <form name="logout" class="header-form" th:action="@{/users/logout}" method="post">
             <button class="header-btn" type="submit">ログアウト</button>

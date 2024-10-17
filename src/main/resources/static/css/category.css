@@ -1,12 +1,60 @@
+select {
+    cursor: pointer;
+}
+
 /* スキル編集ページ */
+
+.category-edit-main {
+    height: 1500px;
+}
+
 .category-block {
     margin-bottom: 30px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px 30px;
+    height: 300px;
 }
+
+.category-block input {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.delete-btn {
+    background-color: #EE6969;
+    border: none;
+    padding: 6px;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+}
+
+.update-btn {
+    border-radius: 3px;
+    padding: 6px;
+    background-color: white;
+    color: #1B5678;
+    border: 1px solid #1B5678;
+    cursor: pointer;
+}
+
 
 .categorys {
     width: 100%;
     border-collapse: collapse; /* セルの間のスペースをなくす */
-    border-top: 1px solid #EEEEEE; /* 上の枠線を追加 */
+    border: 1px solid #EEEEEE; /* 上の枠線を追加 */
+    /* height: 240px; */
+
+}
+
+tbody {
+    height: 180px;
+}
+
+tr {
+    height: 60px;
 }
 
 /* ヘッダーと各行の下にのみ線を引く */
@@ -20,6 +68,35 @@
 .categorys tbody tr:last-child td {
     border-bottom: none;
 }
+
+.category-header {
+    display: flex;
+    /* align-items: center; */
+}
+
+.category-title {
+    margin-bottom: 20px;
+    width: 170px;
+    border-bottom: solid 2px #ccc;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+
+.add-form {
+    margin-left: auto;
+    margin-bottom: 20px;
+}
+
+.add-btn {
+    color: white;
+    background-color: #1B5678;
+    padding: 6px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+
 
 
 
